@@ -1,6 +1,6 @@
 # Requirements list for the application
 
-### Bare minimum (MVP)
+## Bare minimum (MVP)
 
 | User | City council |
 | -----|--------------|
@@ -9,3 +9,21 @@
 | Upvote/downvote -> |  |
 |   | <- View all votes after deadline (cannot identify users) |
 | View past history -> |  |
+
+## User authentication
+ TODO
+
+
+## UI (Web) requirements
+TODO
+
+
+## Mobile requirements
+TODO
+
+
+## CI requirements
+TODO
+
+## Testig requirements
+TODO
