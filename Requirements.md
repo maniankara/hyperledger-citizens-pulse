@@ -2,7 +2,7 @@
 
 ## Bare minimum (MVP)
 
-| User | City council |
+| Citizen | City council |
 | -----|--------------|
 |      | <- Create poll with deadline |
 | List all polls -> |  |
