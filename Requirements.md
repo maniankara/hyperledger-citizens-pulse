@@ -25,5 +25,5 @@ TODO
 ## CI requirements
 TODO
 
-## Testig requirements
+## Testing requirements
 TODO
