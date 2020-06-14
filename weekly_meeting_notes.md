@@ -3,7 +3,10 @@
 * Not much time, still finished: #4
 * Private Data Collection (PDC):
   ** challenge with sdk
-
+* Plans for next week: 
+ - sort: fabric node sdk with private date collections
+ - work on #5, #6, #7
+ 
 07.06.2020
 * Iterative is okay
 * Project plan 
