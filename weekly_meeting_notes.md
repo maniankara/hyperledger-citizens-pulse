@@ -2,7 +2,7 @@
 * Project plan submitted - 11.06.2020
 * Not much time, still finished: #4
 * Private Data Collection (PDC):
-  ** 
+  ** challenge with sdk
 
 07.06.2020
 * Iterative is okay
