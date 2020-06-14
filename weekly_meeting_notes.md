@@ -6,6 +6,7 @@
 * Plans for next week: 
  - sort: fabric node sdk with private date collections
  - work on #5, #6, #7
+ - Anoop will check: (a) Pull request (b) Get a hold about creating a poll in fabric
  
 07.06.2020
 * Iterative is okay
