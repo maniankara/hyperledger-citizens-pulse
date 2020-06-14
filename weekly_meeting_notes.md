@@ -1,5 +1,8 @@
-15.06.2020
-
+14.06.2020
+* Project plan submitted - 11.06.2020
+* Not much time, still finished: #4
+* Private Data Collection (PDC):
+  ** 
 
 07.06.2020
 * Iterative is okay
