@@ -1,3 +1,13 @@
+28.06.2020
+* Completed tasks
+* Discussed about API server in between client and Ledger network
+  - API server can be implemented with any framework: node, golang(http), ruby on rails
+  - API server should have a NoSQL DB for persistance
+  - API server and its DB will be deployed as docker containers
+* Plans for next week:
+  - Anoop to get back on how to map user credentials and hypledger certificates
+  - Start the study/implementation of API server
+
 21.06.2020
 * Very very productive week
 * demoed:
