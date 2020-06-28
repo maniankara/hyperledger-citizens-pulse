@@ -1,24 +1,25 @@
 # hyperledger-citizens-pulse
 
-- Setup
-
-  - Spin a Fabric 2.0 Network
-    - 1 Org with 1 Peer; 1 Orderer & CA
-  - Deploy a helloWorld chaincode that toggles a value
-
-    ```
-    cd test-network/
-    ./network.sh up -ca
-    ./network.sh createChannel
-    ./network.sh deployCC -l javascript
-    ```
-
-  - Node SDK to toggle value
-
-    ```
-    cd ../helloWorld/
-    npm install
-    node enrollAdmin.js
-    node registerUser.js
-    node invoke.js OR node query.js
-    ```
+- Install fabric-binaries by running the following command and `cd` into the network directory
+  ```
+  $> ./binaries.sh
+  ```
+- Delete any previous running containers or network instances
+  ```
+  $> ./generate.sh delNet
+  ```
+- Create a network with 2 Orgs having 2 peers each, along with couchdb containers for each peer; deploy the Plan chaincode
+  ```
+  $> ./generate createChannel
+  $> ./generate deployCC
+  ```
+- Create admins for City and Council, register City users and invoke actions (upvote/downvote/polling-complete)
+  ```
+  $> cd sdk
+  $> node enrollCouncilAdmin.js
+  $> node enrollCityAdmin.js
+  $> node registerCouncilUser.js
+  $> node registerCityUser.js hritik
+  $> node invoke.js plan1 hritik upvote
+  $> node pollComplete.js plan1
+  ```
