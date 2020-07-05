@@ -1,3 +1,10 @@
+05.07.2020
+* Demoed API server, upvote, downvote etc. excellent !
+* Plans for next week:
+  - Start thinking about WebUI
+  - CouchDB integration for storing credentials
+  - Anoop to get back how to map user credentials and hypledger certificates
+
 28.06.2020
 * Completed tasks
 * Discussed about API server in between client and Ledger network
