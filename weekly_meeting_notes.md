@@ -1,5 +1,6 @@
 05.07.2020
 * Demoed API server, upvote, downvote etc. excellent !
+* User/password/token system needs to be discussed before deciding
 * Plans for next week:
   - Start thinking about WebUI
   - CouchDB integration for storing credentials
