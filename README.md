@@ -2,7 +2,7 @@
 
 - Install fabric-binaries by running the following command and `cd` into the network directory
   ```
-  $> ./binaries.sh
+  $> bash binaries.sh
   ```
 - Delete any previous running containers or network instances
   ```
