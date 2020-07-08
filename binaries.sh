@@ -138,7 +138,7 @@ copyConfig() {
     mv config/ network/config/
 }
 
-DOCKER=false
+DOCKER=true
 SAMPLES=false
 BINARIES=true
 
