@@ -310,7 +310,7 @@ sleep 10
 echo "Querying chaincode on peer0.org1..."
 chaincodeQuery 1
 
-echo "Querying chaincode on peer0.org2..."
-chaincodeQuery 2
+# echo "Querying chaincode on peer0.org2..."
+# chaincodeQuery 2 
 
 exit 0
