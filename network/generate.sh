@@ -18,6 +18,7 @@ export VERBOSE=false
 COMPOSE_FILE_BASE=docker/docker-compose-basic.yaml
 COMPOSE_FILE_CA=docker/docker-compose-ca.yaml
 COMPOSE_FILE_COUCH=docker/docker-compose-couch.yaml
+COMPOSE_FILE_API=docker/docker-compose-api.yaml
 CHANNEL_NAME="mychannel"
 MAX_RETRY=5
 CLI_DELAY=3
@@ -139,6 +140,10 @@ function delNet(){
 
 function deployCC(){
   scripts/deployCC-plan.sh $CHANNEL_NAME $CC_SRC_LANGUAGE $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE
+}
+
+function api(){
+  IMAGE_TAG=$IMAGE_TAG docker-compose -f $COMPOSE_FILE_API up -d 2>&1
 }
 
 function createUsers(){
