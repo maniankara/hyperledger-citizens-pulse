@@ -1,0 +1,17 @@
+version: "2"
+
+networks:
+  basic:
+
+services:
+  api:
+    image: node:11-alpine
+    build: .
+    ports:
+      - "3000:3000"
+    command: npm run start
+    volumes:
+      - .:/usr/src/api/
+      - ../network:/usr/src/network/
+    networks:
+      - basic
