@@ -1,3 +1,7 @@
+12.07.2020
+* Discuss about the release 0.1, what needs to be included, timeline etc.
+
+
 05.07.2020
 * Demoed API server, upvote, downvote etc. excellent !
 * User/password/token system needs to be discussed before deciding
