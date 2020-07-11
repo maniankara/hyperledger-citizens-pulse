@@ -1,6 +1,7 @@
 12.07.2020
 * Discuss about the release 0.1, what needs to be included, timeline etc.
 * Final submission - blog, white paper etc.
+* Try to deploy our solution on atleast 1 cloud vendor with HF managed service
 
 
 05.07.2020
