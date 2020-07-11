@@ -1,5 +1,6 @@
 12.07.2020
 * Discuss about the release 0.1, what needs to be included, timeline etc.
+* Final submission - blog, white paper etc.
 
 
 05.07.2020
