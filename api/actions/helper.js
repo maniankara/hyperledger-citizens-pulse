@@ -109,7 +109,6 @@ const getRegisteredUser = async (username, userOrg, isJson) => {
       .getProvider(adminIdentity.type);
     const adminUser = await provider.getUserContext(adminIdentity, adminName);
 
-    console.log(provider);
     const secret = await ca.register(
       {
         affiliation: await getAffiliation(userOrg),
