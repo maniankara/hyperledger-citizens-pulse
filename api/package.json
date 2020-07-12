@@ -2,7 +2,7 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
@@ -24,7 +24,6 @@
     "js-yaml": "^3.13.1",
     "jsonwebtoken": "^8.5.1",
     "log4js": "^6.2.0",
-    "npm": "^6.9.1",
-    "grpc": "^1.11.0"
+    "npm": "^6.14.6"
   }
 }
