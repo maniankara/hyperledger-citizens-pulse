@@ -146,6 +146,10 @@ function api(){
   IMAGE_TAG=$IMAGE_TAG docker-compose -f $COMPOSE_FILE_API up -d 2>&1
 }
 
+function delUsers(){
+  sudo rm -rf ../api/org*
+}
+
 function createUsers(){
   cd sdk/
   node enrollAdmin1.js
