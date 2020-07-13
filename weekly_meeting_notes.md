@@ -2,6 +2,12 @@
 * Discuss about the release 0.1, what needs to be included, timeline etc.
 * Final submission - blog, white paper etc.
 * Try to deploy our solution on atleast 1 cloud vendor with HF managed service
+* Last week:
+  - Discussed about the release 0.1
+* Plans for next week:
+  - ReactJS + nodeJS - WebUI
+  - Connect WebUI <-> API server
+  - Bug fixes
 
 
 05.07.2020
