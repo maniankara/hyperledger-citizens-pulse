@@ -43,6 +43,7 @@ var pollComplete = async function endPoll(
   });
 
   let cert = identity.credentials.certificate;
+  let message;
 
   // Get the network (channel) our contract is deployed to.
   const network = await gateway.getNetwork(channelName);
@@ -56,8 +57,11 @@ var pollComplete = async function endPoll(
     let planVoteData;
     var res = await getState
       .state(username, planName, channelName, chaincodeName)
-      .then((res) => {
-        let curr_state = JSON.parse(res.toString("utf8"));
+      .then((response) => {
+        if (response instanceof Error) {
+          throw response;
+        }
+        let curr_state = JSON.parse(response.toString("utf8"));
         planVoteData = curr_state;
 
         final_upvotes = curr_state.upvote;
@@ -98,14 +102,13 @@ var pollComplete = async function endPoll(
       .setTransient(transientDelDataBuffer)
       .submit();
 
-    var message = `Polling for plan ${planName} stopped. Votes made public!`;
+    message = `Polling for plan ${planName} stopped. Votes made public!`;
     // Disconnect from the gateway.
     await gateway.disconnect();
 
     return message;
   } catch (error) {
-    console.error(`Failed to submit transaction: ${error}`);
-    process.exit(1);
+    return error.message;
   }
 };
 
