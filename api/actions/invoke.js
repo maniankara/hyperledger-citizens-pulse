@@ -13,6 +13,7 @@ const {
 const fs = require("fs");
 const path = require("path");
 const getPlanState = require("./getState");
+const pollComplete = require("./pollComplete");
 const crypto = require("crypto");
 const helper = require("./helper");
 const log4js = require("log4js");
@@ -157,6 +158,18 @@ const invokeTransaction = async (
           .submit();
 
         message = `Transaction has been submitted. ${planName} successfully created!`;
+      }
+    } else if (fcn == "StopPolling") {
+      if (org_name == "Org2") {
+        message = `${org_name} user not authorised to stop the poll.`;
+      } else {
+        const planName = args[0];
+
+        var res = await pollComplete
+          .pollComplete(username, planName, channelName, chaincodeName)
+          .then((res) => {
+            message = res;
+          });
       }
     }
 
