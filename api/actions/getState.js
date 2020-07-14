@@ -53,8 +53,8 @@ var state = async function returnState(
 
     return result;
   } catch (error) {
-    console.log(error);
-    process.exit(1);
+    console.log("error: ", error.message);
+    return error;
   }
 };
 
