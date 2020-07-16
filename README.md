@@ -73,7 +73,7 @@
 
   # TO END POLLING FOR A PLAN: Pass the Org1 User bearer token obtained from the previous step for authorization. Org2 (or City) user is not allowed this operation.
 
-  \$> curl --location --request POST 'localhost:3000/channels/mychannel/chaincodes/planCC' \
+  $> curl --location --request POST 'localhost:3000/channels/mychannel/chaincodes/planCC' \
   --header 'Authorization: Bearer ACCESS_TOKEN_ORG1_USER' \
   --header 'Content-Type: application/json' \
   --data-raw '{
