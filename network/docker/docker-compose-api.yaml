@@ -1,0 +1,17 @@
+version: "2"
+
+services:
+  api:
+    image: apicont:latest
+    build:
+      context: ../../api/
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    command: npm run start
+    volumes:
+      - ../../api/:/usr/src/api/
+      - ../../network:/usr/src/network/
+      - /usr/src/api/node_modules
+
+    network_mode: "host"
