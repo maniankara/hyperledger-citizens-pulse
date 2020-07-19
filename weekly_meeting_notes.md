@@ -1,4 +1,14 @@
+19.07.2020
+* Fixed Anoop's FABRIC_CFG_PATH problem
+* Last week:
+  - user signup and authentication - UI - demo
+* next week:
+  - user can: (a) vote (b) view previous votes
+  - Bug fixes
+
+
 12.07.2020
+* From last week, user credentials <-> certificate mapping should be done in api server.
 * Discuss about the release 0.1, what needs to be included, timeline etc.
 * Final submission - blog, white paper etc.
 * Try to deploy our solution on atleast 1 cloud vendor with HF managed service
