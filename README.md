@@ -2,7 +2,8 @@
 
 - Install fabric-binaries by running the following command and `cd` into the network directory
   ```
-  $> ./binaries.sh
+  $> ./binaries.sh -d -s # if you only have to install the binaries
+  $> ./binaries.sh -s # if you have to install the docker images as well as the binaries
   ```
 - Delete any previous running containers or network instances
   ```
@@ -18,11 +19,11 @@
   ```
   $> ./generate api
   ```
-  This starts the API server at `localhost:3000`.
+  This starts the API server at `localhost:5000`.
 - Register users by sending requests to API endpoints with JSON data, illustrated using the following cURL commands.
 
   ```
-  $> curl --location --request POST 'localhost:3000/users' \
+  $> curl --location --request POST 'localhost:5000/users' \
   --header 'Content-Type: application/json' \
   --data-raw '{
     "username": "anoop",
@@ -30,7 +31,7 @@
   }'
   Returns ACCESS_TOKEN_ORG1_USER
 
-  $> curl --location --request POST 'localhost:3000/users' \
+  $> curl --location --request POST 'localhost:5000/users' \
   --header 'Content-Type: application/json' \
   --data-raw '{
     "username": "hritik",
@@ -47,7 +48,7 @@
   ```
   # TO CREATE A PLAN: Pass the Org1 User bearer token obtained from the previous step for authorization. Org2 (or City) user is not allowed this operation.
 
-  $> curl --location --request POST 'localhost:3000/channels/mychannel/chaincodes/planCC' \
+  $> curl --location --request POST 'localhost:5000/channels/mychannel/chaincodes/planCC' \
   --header 'Authorization: Bearer ACCESS_TOKEN_ORG1_USER' \
   --header 'Content-Type: application/json' \
   --data-raw '{
@@ -60,7 +61,7 @@
 
   # TO UPVOTE/DOWNVOTE: Pass the Org2 User bearer token obtained from the previous step for authorization. Org1 (or Council) user is not allowed this operation.
 
-  $> curl --location --request POST 'localhost:3000/channels/mychannel/chaincodes/planCC' \
+  $> curl --location --request POST 'localhost:5000/channels/mychannel/chaincodes/planCC' \
   --header 'Authorization: Bearer ACCESS_TOKEN_ORG2_USER' \
   --header 'Content-Type: application/json' \
   --data-raw '{
@@ -73,7 +74,7 @@
 
   # TO END POLLING FOR A PLAN: Pass the Org1 User bearer token obtained from the previous step for authorization. Org2 (or City) user is not allowed this operation.
 
-  $> curl --location --request POST 'localhost:3000/channels/mychannel/chaincodes/planCC' \
+  $> curl --location --request POST 'localhost:5000/channels/mychannel/chaincodes/planCC' \
   --header 'Authorization: Bearer ACCESS_TOKEN_ORG1_USER' \
   --header 'Content-Type: application/json' \
   --data-raw '{
