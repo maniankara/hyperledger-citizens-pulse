@@ -134,12 +134,8 @@ pullDockerImages() {
     fi
 }
 
-copyConfig() {
-    mv config/ network/config/
-}
-
 DOCKER=true
-SAMPLES=false
+SAMPLES=true
 BINARIES=true
 
 # Parse commandline args pull out
@@ -196,7 +192,6 @@ if [ "$BINARIES" == "true" ]; then
     echo "Pull Hyperledger Fabric binaries"
     echo
     pullBinaries
-    copyConfig
 fi
 if [ "$DOCKER" == "true" ]; then
     echo

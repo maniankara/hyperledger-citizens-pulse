@@ -1,0 +1,10 @@
+bin
+config
+network/artifacts/*
+network/chaincodes/govtPlan/go/vendor/
+network/crypto-config/fabric-ca/or*
+network/crypto-config/ordererOrganizations/
+network/crypto-config/peerOrganizations/
+network/log.txt
+network/planCC.tar.gz
+api/org*
