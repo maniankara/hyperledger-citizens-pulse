@@ -14,6 +14,7 @@ const fs = require("fs");
 const path = require("path");
 const getPlanState = require("./getState");
 const pollComplete = require("./pollComplete");
+const getPlans = require("./getAllPlans");
 const crypto = require("crypto");
 const helper = require("./helper");
 const log4js = require("log4js");
@@ -171,6 +172,22 @@ const invokeTransaction = async (
             message = res;
           });
       }
+    } else if (fcn == "GetAllPlans") {
+      const startKey = args[0];
+      const endKey = args[1];
+
+      var res = await getPlans
+        .getAllPlans(
+          username,
+          org_name,
+          channelName,
+          chaincodeName,
+          startKey,
+          endKey
+        )
+        .then((res) => {
+          message = res;
+        });
     }
 
     let response = {

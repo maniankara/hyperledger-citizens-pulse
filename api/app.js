@@ -1,7 +1,11 @@
 "use strict";
+const bodyParser = require("body-parser");
+
 const log4js = require("log4js");
 const logger = log4js.getLogger("PlanNet");
-const bodyParser = require("body-parser");
+let cors = require("cors");
+var jwt_decode = require("jwt-decode");
+
 const jwt = require("jsonwebtoken");
 const constants = require("./config/constants.json");
 
@@ -15,6 +19,7 @@ const bearerToken = require("express-bearer-token");
 
 var helper = require("./actions/helper");
 var invoke = require("./actions/invoke");
+const { json } = require("body-parser");
 
 const app = express();
 app.use(bodyParser.json());
@@ -29,14 +34,20 @@ app.use(
     secret: "randomsecret",
     algorithms: ["HS256"],
   }).unless({
-    path: ["/users"],
+    path: ["/users", "/signup", "/authenticate", "/decode"],
   })
 );
 app.use(bearerToken());
+app.use(cors());
 
 app.use((req, res, next) => {
   logger.debug("New req for %s", req.originalUrl);
-  if (req.originalUrl.indexOf("/users") >= 0) {
+  if (
+    req.originalUrl.indexOf("/users") >= 0 ||
+    req.originalUrl.indexOf("/signup") >= 0 ||
+    req.originalUrl.indexOf("/authenticate") >= 0 ||
+    req.originalUrl.indexOf("/decode") >= 0
+  ) {
     return next();
   }
   var token = req.token;
@@ -162,4 +173,75 @@ app.post("/channels/:channelName/chaincodes/:chaincodeName", async function (
     };
     res.send(response_payload);
   }
+});
+
+app.post("/signup", async function (req, res) {
+  var username = req.body.username;
+  var orgName = req.body.orgName;
+
+  logger.info("End point : /signup");
+  logger.info("User name : " + username);
+  logger.info("Org name  : " + orgName);
+
+  let response = await helper.getRegisteredUser(username, orgName, true);
+  logger.debug(
+    "-- returned from registering the username %s for organization %s",
+    username,
+    orgName
+  );
+
+  if (response && typeof response !== "string") {
+    logger.debug(
+      "Successfully registered the username %s for organization %s",
+      username,
+      orgName
+    );
+    res.json(response);
+  } else {
+    logger.debug(
+      "Failed to register the username %s for organization %s with::%s",
+      username,
+      orgName,
+      response
+    );
+    res.json({ success: false, message: response });
+  }
+});
+
+app.post("/authenticate", async function (req, res) {
+  var username = req.body.username;
+  var orgName = req.body.orgName;
+
+  console.log(req.body);
+  logger.info("End point : /authenticate");
+  logger.info("User name : " + username);
+
+  let response = await helper.getUserDetails(username, orgName, true);
+  var result = {};
+  if (response.success) {
+    const userDetails = response.details;
+    const pubkey = userDetails.credentials.certificate;
+
+    var token = jwt.sign(
+      {
+        exp: Math.floor(Date.now() / 1000) + parseInt(constants.jwt_expiretime),
+        username: username,
+        orgName: orgName,
+      },
+      app.get("secret")
+    );
+
+    result.username = username;
+    result.success = true;
+    result.token = token;
+  } else {
+    result = response;
+  }
+  res.send(result);
+});
+
+app.post("/decode", async function (req, res) {
+  var token = req.body.token;
+  var decoded = jwt_decode(token);
+  res.send(decoded);
 });
