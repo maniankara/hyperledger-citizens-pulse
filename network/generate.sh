@@ -136,6 +136,8 @@ function delNet(){
     rm -fr artifacts/*
     rm -fr crypto-config/ordererOrganizations
     rm -fr crypto-config/peerOrganizations
+    sudo rm -fr ../api/org*
+    sudo rm -fr ../api/node*
 }
 
 function deployCC(){

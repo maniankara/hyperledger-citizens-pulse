@@ -7,10 +7,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	// "strconv"
 	// "strings"
 	// "encoding/hex"
 	// "crypto/sha256"
-
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
@@ -34,6 +34,7 @@ type PlanPrivateDetails struct {
 type SmartContract struct {
 	contractapi.Contract
 }
+
 
 // inits a govt plan
 func (s *SmartContract) InitPlan(ctx contractapi.TransactionContextInterface) error {
@@ -179,32 +180,35 @@ func (s *SmartContract) ReadPlanPrivateDetails(ctx contractapi.TransactionContex
 }
 
 
-// func (s *SmartContract) IncreaseVote(ctx contractapi.TransactionContextInterface, planID string) (*PlanPrivateDetails, error) {
+func (s *SmartContract) GetAllPlans(ctx contractapi.TransactionContextInterface, startKey string, endKey string) ([]Plan, error) {
 
-// 	planJSON, err := ctx.GetStub().GetPrivateData("collectionPlanPrivateDetails", planID) //get the plan from chaincode state
-// 	if err != nil {
-// 			return nil, fmt.Errorf("failed to read from plan %s", err.Error())
-// 		}
-// 		if planJSON == nil {
-// 			return nil, fmt.Errorf("%s does not exist", planID)
-// 		}
+	resultsIterator, err := ctx.GetStub().GetPrivateDataByRange("collectionPlan", startKey, endKey)
+	if err != nil {
+			return nil, err
+	}
+	defer resultsIterator.Close()
 
-// 		plan := new(PlanPrivateDetails)
-// 	_ = json.Unmarshal(planJSON, plan)
+	results := []Plan{}
 
-// 	plan.Vote = plan.Vote + 1
-	
-// 	planPrivateDetailsAsBytes, err := json.Marshal(plan)
-// 	if err != nil {
-// 		return plan, fmt.Errorf(err.Error())
-// 	}
-// 	err = ctx.GetStub().PutPrivateData("collectionPlanPrivateDetails", planID, planPrivateDetailsAsBytes)
-// 	if err != nil {
-// 		return plan, fmt.Errorf("failed to put Plan private details: %s", err.Error())
-// 	}
+	for resultsIterator.HasNext() {
+		response, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
 
-// 	return plan, nil
-// }
+		newPlan := new(Plan)
+
+		err = json.Unmarshal(response.Value, newPlan)
+		if err != nil {
+				return nil, err
+		}
+
+		results = append(results, *newPlan)
+	}
+
+	return results, nil
+}
+
 
 func (s *SmartContract) UpdateVote(ctx contractapi.TransactionContextInterface) error {
 
