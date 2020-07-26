@@ -69,6 +69,35 @@ const getOrgMSP = async (org) => {
   return org == "Org1" ? "Org1MSP" : "Org2MSP";
 };
 
+const getUserDetails = async (username, userOrg, isJson) => {
+  try {
+    let ccp = await getCCP(userOrg);
+    const caUrl = await getCaUrl(userOrg, ccp);
+
+    const ca = new FabricCAServices(caUrl);
+
+    const walletPath = await getWalletPath(userOrg);
+    const wallet = await Wallets.newFileSystemWallet(walletPath);
+
+    const userIdentity = await wallet.get(username);
+    if (userIdentity) {
+      var response = {
+        success: true,
+        details: userIdentity,
+      };
+      return response;
+    } else {
+      var response = {
+        success: false,
+        details: "user not found!",
+      };
+    }
+    return response;
+  } catch (e) {
+    return e;
+  }
+};
+
 const getRegisteredUser = async (username, userOrg, isJson) => {
   try {
     let ccp = await getCCP(userOrg);
@@ -87,7 +116,7 @@ const getRegisteredUser = async (username, userOrg, isJson) => {
       );
       var response = {
         success: true,
-        message: username + " enrolled Successfully",
+        message: `An identity for the user ${username} already exists in the wallet`,
       };
       return response;
     }
@@ -217,4 +246,5 @@ module.exports = {
   getCCP: getCCP,
   getWalletPath: getWalletPath,
   getRegisteredUser: getRegisteredUser,
+  getUserDetails: getUserDetails,
 };

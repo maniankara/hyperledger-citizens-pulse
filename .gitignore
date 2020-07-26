@@ -8,3 +8,5 @@ network/crypto-config/peerOrganizations/
 network/log.txt
 network/planCC.tar.gz
 api/org*
+webui/node_modules
+api/node_modules
