@@ -1,3 +1,11 @@
+27.07.2020
+ * Demo - Web UI. `webui` branch
+ * Anoop to test webUI and raise bugs or merge
+ * Next week:
+   - Get DB integrated for api server for basic persistance
+   - Fix bugs
+
+
 19.07.2020
 * Fixed Anoop's FABRIC_CFG_PATH problem
 * Last week:
