@@ -39,6 +39,7 @@ app.use(
 );
 app.use(bearerToken());
 app.use(cors());
+app.options('*', cors());
 
 app.use((req, res, next) => {
   logger.debug("New req for %s", req.originalUrl);
