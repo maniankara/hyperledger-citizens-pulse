@@ -1,3 +1,12 @@
+02.08.2020
+ * MongoDB - Demo
+ * Next Week:
+    - Plan closing implementation
+    - Implementing functional tests, test only our code
+    - CI - Choose a CI: Travis, Github Actions, some other free ones, also check hyperledger's own recommendations
+    - Check-up call from MinYu
+
+
 27.07.2020
  * Demo - Web UI. `webui` branch
  * Anoop to test webUI and raise bugs or merge
