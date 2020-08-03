@@ -13,5 +13,11 @@ services:
       - ../../api/:/usr/src/api/
       - ../../network:/usr/src/network/
       - /usr/src/api/node_modules
-
     network_mode: "host"
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"

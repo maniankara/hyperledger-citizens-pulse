@@ -9,5 +9,3 @@ $> cd webui/
 $> npm install
 $> npm start
 ```
-Register a dummy user `hritik` to Org1. 
-You're set!
