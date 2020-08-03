@@ -9,6 +9,10 @@ var jwt_decode = require("jwt-decode");
 const jwt = require("jsonwebtoken");
 const constants = require("./config/constants.json");
 
+// make connection to mongodb storing user votes
+const connectDb = require("./src/connection");
+const User = require("./src/user.model");
+
 logger.level = "all";
 
 const http = require("http");
@@ -19,7 +23,9 @@ const bearerToken = require("express-bearer-token");
 
 var helper = require("./actions/helper");
 var invoke = require("./actions/invoke");
+var fetchUserVote = require("./actions/obtainUserVote");
 const { json } = require("body-parser");
+const { Model } = require("mongoose");
 
 const app = express();
 app.use(bodyParser.json());
@@ -39,7 +45,6 @@ app.use(
 );
 app.use(bearerToken());
 app.use(cors());
-app.options('*', cors());
 
 app.use((req, res, next) => {
   logger.debug("New req for %s", req.originalUrl);
@@ -82,7 +87,11 @@ const port = process.env.PORT || 5000;
 
 var server = app.listen(port, function () {
   console.log(`Server started on ${port}`);
+  connectDb().then(() => {
+    console.log("MongoDb connected");
+  });
 });
+
 logger.info("****************** SERVER STARTED ************************");
 logger.info("***************  http://%s:%s  ******************", host, port);
 
@@ -245,4 +254,26 @@ app.post("/decode", async function (req, res) {
   var token = req.body.token;
   var decoded = jwt_decode(token);
   res.send(decoded);
+});
+
+app.get("/listall", async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+});
+
+app.get("/user_vote/:username/:org/:planName", async function (req, res) {
+  var username = req.params.username;
+  var planName = req.params.planName;
+  var orgName = req.params.org;
+
+  let response = await fetchUserVote.fetchUserVote(username, orgName, planName);
+  var result = {};
+
+  var temp = await fetchUserVote
+    .fetchUserVote(username, orgName, planName)
+    .then((res) => {
+      result = res;
+    });
+
+  res.send(result);
 });
