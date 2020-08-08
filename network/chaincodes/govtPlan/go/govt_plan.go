@@ -21,6 +21,7 @@ type Plan struct {
 	Deadline      string `json:"deadline"`
 	FinalUpvote int `json:"finalupvote"`
 	FinalDownvote int `json:"finaldownvote"`
+	IsActive bool `json: "isactive"`
 }
 
 type PlanPrivateDetails struct {
@@ -58,6 +59,7 @@ func (s *SmartContract) InitPlan(ctx contractapi.TransactionContextInterface) er
 		Downvote int    `json:"downvote"`
 		FinalUpvote int    `json:"finalupvote"`
 		FinalDownvote int    `json:"finaldownvote"`
+		IsActive bool  		  `json:"isactive"`
 		UserMap map[string]int `json:"usermap"`
 	}
 
@@ -106,6 +108,7 @@ func (s *SmartContract) InitPlan(ctx contractapi.TransactionContextInterface) er
 		Deadline:      planInput.Deadline,
 		FinalUpvote: 	planInput.FinalUpvote,
 		FinalDownvote:	planInput.FinalDownvote,
+		IsActive: 		planInput.IsActive,
 	}
 	planJSONasBytes, err := json.Marshal(plan)
 	if err != nil {
@@ -272,6 +275,7 @@ func (s *SmartContract) UpdateGlobalPlan(ctx contractapi.TransactionContextInter
 		Deadline      string `json:"deadline"`
 		FinalUpvote int `json:"finalupvote"`
 		FinalDownvote int `json:"finaldownvote"`
+		IsActive	bool	`json:"isactive"`
 	}
 
 	var planInput planTransientInput
@@ -287,6 +291,7 @@ func (s *SmartContract) UpdateGlobalPlan(ctx contractapi.TransactionContextInter
 		Deadline: planInput.Deadline,
 		FinalUpvote:	planInput.FinalUpvote,
 		FinalDownvote: 	planInput.FinalDownvote,
+		IsActive:		planInput.IsActive,
 	}
 	planPrivateDetailsAsBytes, err := json.Marshal(plan)
 	if err != nil {
