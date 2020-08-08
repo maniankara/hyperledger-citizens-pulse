@@ -94,6 +94,33 @@ class Dashboard extends React.Component {
       .catch((error) => console.log("error", error));
   }
 
+  handleClosePoll = (e) => {
+    var myHeaders = new Headers();
+
+    myHeaders.append(
+      "Authorization",
+      `Bearer ${localStorage.getItem("user_token")}`
+    );
+    myHeaders.append("Content-Type", "application/json");
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    const planid = e.target.id;
+    fetch(
+      `http://localhost:5000/close-voting/user/${this.state.username}/org/${this.state.orgName}/plan/${planid}/`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => console.log("error", error));
+  };
+
   // Sets user details in state
   // Fetches all the plans
   componentDidMount() {
@@ -195,47 +222,80 @@ class Dashboard extends React.Component {
                     <CardFooter key={footerid}>
                       <div className="legend" key={footerid + "0"}>
                         <i
-                          className="fa fa-circle text-success mr-1"
+                          className={`${
+                            plan.IsActive ? "text-success" : "text-danger"
+                          } fa fa-circle mr-1`}
                           key={footerid + "00"}
                         />
-                        Active
+                        {plan.IsActive ? "Active" : "Polling ended"}
                       </div>
                       <hr />
                       <div className="stats" key={footerid + "1"}>
-                        <Button
-                          disabled={this.state.orgName == "Org1"}
-                          className="btn btn-outline-success mr-2"
-                          key={footerid + "10"}
-                          id={plan.planid}
-                          onClick={this.handleClick}
-                          value="upvote"
-                          active={this.state.plans[idx].choice == 1}
-                        >
-                          Upvote
-                        </Button>
-                        <Button
-                          disabled={this.state.orgName == "Org1"}
-                          className="btn btn-outline-danger"
-                          key={footerid + "11"}
-                          id={plan.planid}
-                          onClick={this.handleClick}
-                          value="downvote"
-                          active={this.state.plans[idx].choice == -1}
-                        >
-                          Downvote
-                        </Button>
+                        {plan.IsActive ? (
+                          <div>
+                            <Button
+                              disabled={this.state.orgName == "Org1"}
+                              className="btn btn-outline-success mr-2"
+                              key={footerid + "10"}
+                              id={plan.planid}
+                              onClick={this.handleClick}
+                              value="upvote"
+                              active={this.state.plans[idx].choice == 1}
+                            >
+                              Upvote
+                            </Button>
+                            <Button
+                              disabled={this.state.orgName == "Org1"}
+                              className="btn btn-outline-danger"
+                              key={footerid + "11"}
+                              id={plan.planid}
+                              onClick={this.handleClick}
+                              value="downvote"
+                              active={this.state.plans[idx].choice == -1}
+                            >
+                              Downvote
+                            </Button>
 
-                        <Button
-                          disabled={this.state.orgName == "Org2"}
-                          className="btn btn-outline-info"
-                          key={footerid + "12"}
-                          id={plan.planid}
-                          onClick={this.handleClosePoll}
-                          value="downvote"
-                          style={{ float: "right" }}
-                        >
-                          Close Voting
-                        </Button>
+                            <Button
+                              disabled={this.state.orgName == "Org2"}
+                              className="btn btn-outline-info"
+                              key={footerid + "12"}
+                              id={plan.planid}
+                              onClick={this.handleClosePoll}
+                              value="downvote"
+                              style={{ float: "right" }}
+                            >
+                              Close Voting
+                            </Button>
+                          </div>
+                        ) : (
+                          <Row>
+                            <Col md="2">
+                              <i
+                                className="fas fa-arrow-up"
+                                style={{
+                                  color:
+                                    this.state.plans[idx].choice == 1
+                                      ? "green"
+                                      : "",
+                                }}
+                              ></i>
+                              {plan.finalupvote}
+                            </Col>
+                            <Col md="2">
+                              <i
+                                className="fas fa-arrow-down"
+                                style={{
+                                  color:
+                                    this.state.plans[idx].choice == -1
+                                      ? "red"
+                                      : "",
+                                }}
+                              ></i>
+                              {plan.finaldownvote}
+                            </Col>
+                          </Row>
+                        )}
                       </div>
                     </CardFooter>
                   </Card>
@@ -243,171 +303,6 @@ class Dashboard extends React.Component {
               })}
             </Col>
           </Row>
-          {/* <Row>
-            <Col lg="3" md="6" sm="6">
-              <Card className="card-stats">
-                <CardBody>
-                  <Row>
-                    <Col md="4" xs="5">
-                      <div className="icon-big text-center icon-warning">
-                        <i className="nc-icon nc-globe text-warning" />
-                      </div>
-                    </Col>
-                    <Col md="8" xs="7">
-                      <div className="numbers">
-                        <p className="card-category">Capacity</p>
-                        <CardTitle tag="p">150GB</CardTitle>
-                        <p />
-                      </div>
-                    </Col>
-                  </Row>
-                </CardBody>
-                <CardFooter>
-                  <hr />
-                  <div className="stats">
-                    <i className="fas fa-sync-alt" /> Update Now
-                  </div>
-                </CardFooter>
-              </Card>
-            </Col>
-            <Col lg="3" md="6" sm="6">
-              <Card className="card-stats">
-                <CardBody>
-                  <Row>
-                    <Col md="4" xs="5">
-                      <div className="icon-big text-center icon-warning">
-                        <i className="nc-icon nc-money-coins text-success" />
-                      </div>
-                    </Col>
-                    <Col md="8" xs="7">
-                      <div className="numbers">
-                        <p className="card-category">Revenue</p>
-                        <CardTitle tag="p">$ 1,345</CardTitle>
-                        <p />
-                      </div>
-                    </Col>
-                  </Row>
-                </CardBody>
-                <CardFooter>
-                  <hr />
-                  <div className="stats">
-                    <i className="far fa-calendar" /> Last day
-                  </div>
-                </CardFooter>
-              </Card>
-            </Col>
-            <Col lg="3" md="6" sm="6">
-              <Card className="card-stats">
-                <CardBody>
-                  <Row>
-                    <Col md="4" xs="5">
-                      <div className="icon-big text-center icon-warning">
-                        <i className="nc-icon nc-vector text-danger" />
-                      </div>
-                    </Col>
-                    <Col md="8" xs="7">
-                      <div className="numbers">
-                        <p className="card-category">Errors</p>
-                        <CardTitle tag="p">23</CardTitle>
-                        <p />
-                      </div>
-                    </Col>
-                  </Row>
-                </CardBody>
-                <CardFooter>
-                  <hr />
-                  <div className="stats">
-                    <i className="far fa-clock" /> In the last hour
-                  </div>
-                </CardFooter>
-              </Card>
-            </Col>
-            <Col lg="3" md="6" sm="6">
-              <Card className="card-stats">
-                <CardBody>
-                  <Row>
-                    <Col md="4" xs="5">
-                      <div className="icon-big text-center icon-warning">
-                        <i className="nc-icon nc-favourite-28 text-primary" />
-                      </div>
-                    </Col>
-                    <Col md="8" xs="7">
-                      <div className="numbers">
-                        <p className="card-category">Followers</p>
-                        <CardTitle tag="p">+45K</CardTitle>
-                        <p />
-                      </div>
-                    </Col>
-                  </Row>
-                </CardBody>
-                <CardFooter>
-                  <hr />
-                  <div className="stats">
-                    <i className="fas fa-sync-alt" /> Update now
-                  </div>
-                </CardFooter>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-            <Col md="12">
-              <Card>
-                <CardHeader>
-                  <CardTitle tag="h5">Users Behavior</CardTitle>
-                  <p className="card-category">24 Hours performance</p>
-                </CardHeader>
-                <CardBody></CardBody>
-                <CardFooter>
-                  <hr />
-                  <div className="stats">
-                    <i className="fa fa-history" /> Updated 3 minutes ago
-                  </div>
-                </CardFooter>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-            <Col md="4">
-              <Card>
-                <CardHeader>
-                  <CardTitle tag="h5">Email Statistics</CardTitle>
-                  <p className="card-category">Last Campaign Performance</p>
-                </CardHeader>
-                <CardBody></CardBody>
-                <CardFooter>
-                  <div className="legend">
-                    <i className="fa fa-circle text-primary" /> Opened{" "}
-                    <i className="fa fa-circle text-warning" /> Read{" "}
-                    <i className="fa fa-circle text-danger" /> Deleted{" "}
-                    <i className="fa fa-circle text-gray" /> Unopened
-                  </div>
-                  <hr />
-                  <div className="stats">
-                    <i className="fa fa-calendar" /> Number of emails sent
-                  </div>
-                </CardFooter>
-              </Card>
-            </Col>
-            <Col md="8">
-              <Card className="card-chart">
-                <CardHeader>
-                  <CardTitle tag="h5">NASDAQ: AAPL</CardTitle>
-                  <p className="card-category">Line Chart with Points</p>
-                </CardHeader>
-                <CardBody></CardBody>
-                <CardFooter>
-                  <div className="chart-legend">
-                    <i className="fa fa-circle text-info" /> Tesla Model S{" "}
-                    <i className="fa fa-circle text-warning" /> BMW 5 Series
-                  </div>
-                  <hr />
-                  <div className="card-stats">
-                    <i className="fa fa-check" /> Data information certified
-                  </div>
-                </CardFooter>
-              </Card> 
-            </Col>
-          </Row>*/}
         </div>
       </>
     );

@@ -2,7 +2,7 @@ version: "2"
 
 services:
   api:
-    image: apicont:latest
+    image: citizenpulse-api:latest
     build:
       context: ../../api/
       dockerfile: Dockerfile

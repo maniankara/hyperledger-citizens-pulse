@@ -1,5 +1,26 @@
 # hyperledger-citizens-pulse
 
+## Bringing up API and Web Server
+
+- `cd` into the network directory from the ROOT of the Project.
+  - Firstly, make sure to perform the cleaning by deleting all the previous running containers and unwanted images.
+    ```
+    $> ./generate delNet
+    ```
+  - Bring the Fabric network up, by running:
+    ```
+    $> ./generate createChannel
+    $> ./generate deployCC  #deploys the chaincode
+    ```
+  - To start the API and Web server, run:
+    ```
+    $> ./generate api # starts the API server, runs on localhost:5000
+    $> ./generate webui # starts the Web server, runs on localhost:3000
+    ```
+  - Navigate to `http://localhost:3000/` in your browser and get started. Signup `hritik` to `Org1` as a dummy user.
+
+## Headstart for downloading binaries, spinning network and testing API
+
 - Install fabric-binaries by running the following command and `cd` into the network directory
   ```
   $> ./binaries.sh -d -s # if you only have to install the binaries
