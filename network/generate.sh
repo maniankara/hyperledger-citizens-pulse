@@ -164,9 +164,15 @@ function webui(){
   IMAGE_TAG=$IMAGE_TAG docker-compose -f $COMPOSE_FILE_WEBUI up -d 2>&1
 }
 
-
 function delUsers(){
   sudo rm -rf ../api/org*
+}
+
+function projectUp(){
+  createChannel;
+  deployCC;
+  api;
+  webui;
 }
 
 function createUsers(){
