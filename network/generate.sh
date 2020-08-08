@@ -30,9 +30,18 @@ VERSION=1
 function removeUnwantedImages() {
   DOCKER_IMAGE_IDS=$(docker images | awk '($1 ~ /dev-peer.*/) {print $3}')
   if [ -z "$DOCKER_IMAGE_IDS" -o "$DOCKER_IMAGE_IDS" == " " ]; then
-    echo "---- No images available for deletion ----"
+    echo "---- No network images available for deletion ----"
   else
     docker rmi -f $DOCKER_IMAGE_IDS
+  fi
+}
+
+function clearContainers() {
+  CONTAINER_IDS=$(docker ps -a | awk '(($2 ~ /dev-peer.*/) || ($2 ~ /peer.*/) || ($2 ~ /net*/) || ($2 ~ /ca*/) || ($2 ~ /couch*/) || ($2 ~ /orderer*/)) {print $1}')
+  if [ -z "$CONTAINER_IDS" -o "$CONTAINER_IDS" == " " ]; then
+    echo "---- No containers available for deletion ----"
+  else
+    docker rm -f $CONTAINER_IDS
   fi
 }
 
@@ -40,7 +49,7 @@ function removeUnwantedImages() {
 function removeServerImages() {
   DOCKER_IMAGE_IDS=$(docker images | awk '($1 ~ /citizenpulse.*/) {print $3}')
   if [ -z "$DOCKER_IMAGE_IDS" -o "$DOCKER_IMAGE_IDS" == " " ]; then
-    echo "---- No images available for deletion ----"
+    echo "---- No server images available for deletion ----"
   else
     docker rmi -f $DOCKER_IMAGE_IDS
   fi
@@ -136,20 +145,33 @@ function createChannel() {
 }
 
 function delNet(){
-    rm *.tar.gz
-    sudo rm -rf ./crypto-config/fabric-ca/or*
-    rm sdk/wallet/*
-    docker stop $(docker ps -aq)
-    docker rm $(docker ps -aq)
+
+    if [ -f *.tar.gz ]; then
+      rm *.tar.gz
+    fi
+    if find ./crypto-config/fabric-ca -name 'or*' -printf 1 -quit | grep -q 1; then
+      sudo rm -rf ./crypto-config/fabric-ca/or*
+    fi
+    if find ./artifacts -name '*' -printf 1 -quit | grep -q 1; then
+      rm -rf artifacts/*
+    fi
+    if [ -d "crypto-config/ordererOrganizations" ]; then
+      rm -rf crypto-config/ordererOrganizations
+    fi
+    if [ -d "crypto-config/peerOrganizations" ]; then
+      rm -rf crypto-config/peerOrganizations
+    fi
+    if find ../api/ -name 'org*' -printf 1 -quit | grep -q 1; then
+      sudo rm -rf ../api/org*
+    fi
+    if find ../api/ -name 'node*' -printf 1 -quit | grep -q 1; then
+      sudo rm -rf ../api/node*
+    fi
+    clearContainers
     removeUnwantedImages
     removeServerImages
     docker network prune -f
     docker volume prune -f
-    rm -fr artifacts/*
-    rm -fr crypto-config/ordererOrganizations
-    rm -fr crypto-config/peerOrganizations
-    sudo rm -fr ../api/org*
-    sudo rm -fr ../api/node*
 }
 
 function deployCC(){
