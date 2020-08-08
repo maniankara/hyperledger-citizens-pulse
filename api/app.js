@@ -24,6 +24,7 @@ const bearerToken = require("express-bearer-token");
 var helper = require("./actions/helper");
 var invoke = require("./actions/invoke");
 var fetchUserVote = require("./actions/obtainUserVote");
+var pollComplete = require("./actions/pollComplete");
 const { json } = require("body-parser");
 const { Model } = require("mongoose");
 
@@ -266,9 +267,7 @@ app.get("/user_vote/:username/:org/:planName", async function (req, res) {
   var planName = req.params.planName;
   var orgName = req.params.org;
 
-  let response = await fetchUserVote.fetchUserVote(username, orgName, planName);
   var result = {};
-
   var temp = await fetchUserVote
     .fetchUserVote(username, orgName, planName)
     .then((res) => {
@@ -277,3 +276,21 @@ app.get("/user_vote/:username/:org/:planName", async function (req, res) {
 
   res.send(result);
 });
+
+app.post(
+  "/close-voting/user/:username/org/:orgname/plan/:planName/",
+  async function (req, res) {
+    var username = req.params.username;
+    var planName = req.params.planName;
+    var orgName = req.params.orgname;
+
+    var result = {};
+    var temp = await pollComplete
+      .pollComplete(username, orgName, planName, "mychannel", "planCC")
+      .then((res) => {
+        result = res;
+      });
+
+    res.send(result);
+  }
+);

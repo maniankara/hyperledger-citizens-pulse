@@ -159,6 +159,7 @@ const invokeTransaction = async (
         message = `${org_name} user not authorised to create plan.`;
       } else {
         let planData = JSON.parse(transientData);
+        planData["IsActive"] = true;
         let planName = planData.planid;
         planData = { plan: planData };
 

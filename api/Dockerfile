@@ -8,6 +8,6 @@ COPY package*.json /usr/src/api/
 RUN npm install
 
 COPY . .
-EXPOSE 3000
+EXPOSE 5000
 
 CMD ["npm", "run", "start"]
