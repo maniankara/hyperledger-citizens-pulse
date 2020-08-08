@@ -37,7 +37,7 @@ function removeUnwantedImages() {
 }
 
 function clearContainers() {
-  CONTAINER_IDS=$(docker ps -a | awk '(($2 ~ /dev-peer.*/) || ($2 ~ /peer.*/) || ($2 ~ /net*/) || ($2 ~ /ca*/) || ($2 ~ /couch*/) || ($2 ~ /orderer*/)) {print $1}')
+  CONTAINER_IDS=$(docker ps -a | awk '(($2 ~ /dev-peer.*/) || ($2 ~ /peer.*/) || ($2 ~ /net*/) || ($2 ~ /ca*/) || ($2 ~ /couch*/) || ($2 ~ /orderer*/) || ($2 ~ /mongo*/)) {print $1}')
   if [ -z "$CONTAINER_IDS" -o "$CONTAINER_IDS" == " " ]; then
     echo "---- No containers available for deletion ----"
   else
