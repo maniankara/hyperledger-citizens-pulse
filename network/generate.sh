@@ -36,6 +36,16 @@ function removeUnwantedImages() {
   fi
 }
 
+
+function removeServerImages() {
+  DOCKER_IMAGE_IDS=$(docker images | awk '($1 ~ /citizenpulse.*/) {print $3}')
+  if [ -z "$DOCKER_IMAGE_IDS" -o "$DOCKER_IMAGE_IDS" == " " ]; then
+    echo "---- No images available for deletion ----"
+  else
+    docker rmi -f $DOCKER_IMAGE_IDS
+  fi
+}
+
 function createOrgs() {
     echo "##########################################################"
     echo "##### Generate certificates using Fabric CA's ############"
@@ -132,6 +142,7 @@ function delNet(){
     docker stop $(docker ps -aq)
     docker rm $(docker ps -aq)
     removeUnwantedImages
+    removeServerImages
     docker network prune -f
     docker volume prune -f
     rm -fr artifacts/*

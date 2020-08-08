@@ -2,12 +2,12 @@ version: "2"
 
 services:
   webui:
-    image: webui:latest
+    image: citizenpulse-webui:latest
     build:
       context: ../../webui/
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "5000:5000"
     command: npm start
     volumes:
       - ../../webui/:/usr/src/webui/

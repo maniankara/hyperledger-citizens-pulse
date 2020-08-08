@@ -13,12 +13,13 @@ const helper = require("./helper");
 
 var pollComplete = async function endPoll(
   username,
+  orgname,
   planName,
   channelName,
   chaincodeName
 ) {
   // load the network configuration
-  const org_name = "Org1";
+  const org_name = orgname;
   const ccp = await helper.getCCP(org_name);
 
   // Create a new file system based wallet for managing identities.
@@ -73,13 +74,14 @@ var pollComplete = async function endPoll(
 
     global_state.finalupvote = final_upvotes;
     global_state.finaldownvote = final_downvotes;
+    global_state.IsActive = false;
 
     let planData = { plan: global_state };
     let key = Object.keys(planData)[0];
     const transientDataBuffer = {};
     transientDataBuffer[key] = Buffer.from(JSON.stringify(planData.plan));
 
-    console.log(planData);
+    // Update global plan with the details fetched from private plan
     let response = await contract
       .createTransaction("UpdateGlobalPlan")
       .setTransient(transientDataBuffer)
@@ -97,16 +99,21 @@ var pollComplete = async function endPoll(
       JSON.stringify(planDeleteData.plan_delete)
     );
 
+    // Delete private collection from peer persistence
     let result_del = await contract
       .createTransaction("DeletePrivatePlan")
       .setTransient(transientDelDataBuffer)
       .submit();
 
+    var end_response = {};
     message = `Polling for plan ${planName} stopped. Votes made public!`;
     // Disconnect from the gateway.
     await gateway.disconnect();
 
-    return message;
+    end_response = {
+      message: message,
+    };
+    return end_response;
   } catch (error) {
     return error.message;
   }
