@@ -222,7 +222,7 @@ chaincodeInvokeInit() {
   # peer (if join was successful), let's supply it directly as we know
   # it using the "-o" option
 
-  export PLAN=$(echo -n "{\"planid\":\"plan1\",\"description\":\"this is the description of this plan\",\"deadline\":\"21/July/2020\",\"upvote\":0, \"downvote\":0, \"finalupvote\":0, \"finaldownvote\":0 }" | base64 | tr -d \\n)
+  export PLAN=$(echo -n "{\"planid\":\"plan1\",\"description\":\"this is the description of this plan\",\"deadline\":\"21/July/2020\",\"upvote\":0, \"downvote\":0, \"finalupvote\":0, \"finaldownvote\":0, \"isactive\":true }" | base64 | tr -d \\n)
   set -x
 #   peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n planCC $PEER_CONN_PARMS --isInit -c '{"Args":[]}' >&log.txt
   peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n planCC $PEER_CONN_PARMS  -c '{"function":"initPlan","Args":[]}' --transient "{\"plan\":\"$PLAN\"}" >&log.txt

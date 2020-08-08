@@ -19,6 +19,7 @@ COMPOSE_FILE_BASE=docker/docker-compose-basic.yaml
 COMPOSE_FILE_CA=docker/docker-compose-ca.yaml
 COMPOSE_FILE_COUCH=docker/docker-compose-couch.yaml
 COMPOSE_FILE_API=docker/docker-compose-api.yaml
+COMPOSE_FILE_WEBUI=docker/docker-compose-web.yaml
 CHANNEL_NAME="mychannel"
 MAX_RETRY=5
 CLI_DELAY=3
@@ -147,6 +148,11 @@ function deployCC(){
 function api(){
   IMAGE_TAG=$IMAGE_TAG docker-compose -f $COMPOSE_FILE_API up -d 2>&1
 }
+
+function webui(){
+  IMAGE_TAG=$IMAGE_TAG docker-compose -f $COMPOSE_FILE_WEBUI up -d 2>&1
+}
+
 
 function delUsers(){
   sudo rm -rf ../api/org*
