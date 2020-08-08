@@ -7,16 +7,21 @@
     ```
     $> ./generate delNet
     ```
-  - Bring the Fabric network up, by running:
+  - Bring the whole project up by running:
     ```
-    $> ./generate createChannel
-    $> ./generate deployCC  #deploys the chaincode
+    $> ./generate projectUp
     ```
-  - To start the API and Web server, run:
-    ```
-    $> ./generate api # starts the API server, runs on localhost:5000
-    $> ./generate webui # starts the Web server, runs on localhost:3000
-    ```
+    or follow the steps individually:
+    - Bring the Fabric network up, by running:
+      ```
+      $> ./generate createChannel
+      $> ./generate deployCC  #deploys the chaincode
+      ```
+    - To start the API and Web server, run:
+      ```
+      $> ./generate api # starts the API server, runs on localhost:5000
+      $> ./generate webui # starts the Web server, runs on localhost:3000
+      ```
   - Navigate to `http://localhost:3000/` in your browser and get started. Signup `hritik` to `Org1` as a dummy user.
 
 ## Headstart for downloading binaries, spinning network and testing API
