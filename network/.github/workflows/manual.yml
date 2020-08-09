@@ -1,0 +1,19 @@
+# This is a basic workflow that is manually triggered
+
+name: First Workflow
+
+on: [push]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  runStarterScripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        with:
+          ref: webui
+      - name: Network test
+        run: |
+          bash binaries.sh -s
+          cd network
+          bash generate.sh projectUp
