@@ -1,3 +1,14 @@
+09.08.2020
+ * Plan closing implementation - Demo
+ * GitHub actions - Demo
+ * Next Week:
+    - Add tests
+    - Attach to pull requests
+    - Anoop: To check with HF what CI is recommended
+    - Documentation: Add tests, contributing etc.
+    - Anoop: To test and raise bugs
+    - Think about making the council as a role (not always Org1)
+
 02.08.2020
  * MongoDB - Demo
  * Next Week:
