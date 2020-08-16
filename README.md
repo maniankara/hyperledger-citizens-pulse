@@ -1,115 +1,69 @@
-# hyperledger-citizens-pulse
+# Hyperledger Citizens Pulse
 
-## Bringing up API and Web Server
+A fully distributed platform for state/city councils to propose plans and garner voices of the public, built with Hyperledger Fabric.
 
-- `cd` into the network directory from the ROOT of the Project.
-  - Firstly, make sure to perform the cleaning by deleting all the previous running containers and unwanted images.
-    ```
-    $> ./generate delNet
-    ```
-  - Bring the whole project up by running:
-    ```
-    $> ./generate projectUp
-    ```
-    or follow the steps individually:
-    - Bring the Fabric network up, by running:
-      ```
-      $> ./generate createChannel
-      $> ./generate deployCC  #deploys the chaincode
-      ```
-    - To start the API and Web server, run:
-      ```
-      $> ./generate api # starts the API server, runs on localhost:5000
-      $> ./generate webui # starts the Web server, runs on localhost:3000
-      ```
-  - Navigate to `http://localhost:3000/` in your browser and get started. Signup `hritik` to `Org1` as a dummy user.
+## Getting Started
 
-## Headstart for downloading binaries, spinning network and testing API
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. The following commands assume the operating system to be a Linux based distribution.
 
-- Install fabric-binaries by running the following command and `cd` into the network directory
-  ```
-  $> ./binaries.sh -d -s # if you only have to install the binaries
-  $> ./binaries.sh -s # if you have to install the docker images as well as the binaries
-  ```
-- Delete any previous running containers or network instances
-  ```
-  $> ./generate.sh delNet
-  ```
-- Create a network with 2 Orgs having 2 peers each, along with couchdb containers for each peer; deploy the Plan chaincode
-  ```
-  $> ./generate createChannel
-  $> ./generate deployCC
-  ```
-  The CouchDB GUI showing all the databases and documents can be viewed at `http://localhost:5984/_utils/`. To make sure that the collections have been created, check-out the `mychannel_plan$c$c$$pcollection$plan` and `mychannel_plan$c$c$$pcollection$plan$private$details` documents.
-- Start the API Container
-  ```
-  $> ./generate api
-  ```
-  This starts the API server at `localhost:5000`.
-- Register users by sending requests to API endpoints with JSON data, illustrated using the following cURL commands.
+### Prerequisites
 
-  ```
-  $> curl --location --request POST 'localhost:5000/users' \
-  --header 'Content-Type: application/json' \
-  --data-raw '{
-    "username": "anoop",
-    "orgName": "Org1"
-  }'
-  Returns ACCESS_TOKEN_ORG1_USER
+Following are a few dependencies that need to be installed:
 
-  $> curl --location --request POST 'localhost:5000/users' \
-  --header 'Content-Type: application/json' \
-  --data-raw '{
-    "username": "hritik",
-    "orgName": "Org2"
-  }'
-  Returns ACCESS_TOKEN_ORG2_USER
+- Git
+- Docker, Docker Compose
+- Node: any 12.x version starting with v12.0.0 or greater
 
-  # This returns a token corresponding to the user. Make note of it, as the token will be used to perform further actions.
-  # Org1 signifies Council, whereas Org2 signifies City. The private collection of plan votes is persisted in Org1.
-  ```
+### Installing
 
-  - Once the users are registered, the user can perform actions he/she is authorised to, using the token obtained on registration, illustrated using the following cURL commands.
+1. Clone the repository
+   ```
+   git clone https://github.com/maniankara/hyperledger-citizens-pulse.git
+   ```
+2. Install fabric-binaries by running the following command.
+   ```
+   ./binaries.sh -d -s # if you only want to install the binaries
+   ./binaries.sh -s # if you want to install the docker images as well as binaries
+   ```
+3. `cd` into the `network` directory. Delete any previous running containers, images or network instances
+   ```
+   ./generate.sh delNet
+   ```
+4. Bring up the project i.e. the Hyperledger Fabric network, the API and Web Server. The network entails creation of channel having two Orgs, deployment of chaincode on all peers of both the organisations. The API server is to interacts with the network once up, while the Web server delivers pages to client-side thus enabling the user to send requests.
+   ```
+   ./generate.sh projectUp
+   ```
+   In case of a failure, try bringing up the containers individually, as follows:
+   ```
+   ./generate.sh createChannel
+   ./generate.sh deployCC       # deploys the chaincode
+   ./generate.sh api            # starts the API server, runs on localhost:5000
+   ./generate.sh webui          # starts the Web server, runs on localhost:3000
+   ```
+   The CouchDB GUI showing all the databases and documents can be viewed at http://localhost:5984/_utils/. To make sure that the private-collections (meant for plan data persistence) have been created, check-out the `mychannel_plan$c$c\$$pcollection$plan` and `mychannel_plan$c$c\$$pcollection$plan$private$details` documents.
+5. Navigate to `http://localhost:3000/` in your browser. Signup `hritik` to `Org1` as a dummy user mandatorily.
 
-  ```
-  # TO CREATE A PLAN: Pass the Org1 User bearer token obtained from the previous step for authorization. Org2 (or City) user is not allowed this operation.
+## Running the tests
 
-  $> curl --location --request POST 'localhost:5000/channels/mychannel/chaincodes/planCC' \
-  --header 'Authorization: Bearer ACCESS_TOKEN_ORG1_USER' \
-  --header 'Content-Type: application/json' \
-  --data-raw '{
-      "fcn": "InitPlan",
-      "channelName": "mychannel",
-      "chaincodeName": "planCC",
-      "transient": "{\"planid\":\"plan2\",\"description\":\"this is desc of plan2\",\"deadline\":\"19/07/2020\",\"upvote\":0,\"downvote\":0,\"finalupvote\":0,\"finaldownvote\":0}",
-      "args": []
-  }'
+To check if the setup has been done correctly, run a few tests to ensure working of the core functionalities.
 
-  # TO UPVOTE/DOWNVOTE: Pass the Org2 User bearer token obtained from the previous step for authorization. Org1 (or Council) user is not allowed this operation.
+1. `cd` into the `network/tests` directory from project root. Run
+   ```
+   bash runAllTests.sh
+   ```
 
-  $> curl --location --request POST 'localhost:5000/channels/mychannel/chaincodes/planCC' \
-  --header 'Authorization: Bearer ACCESS_TOKEN_ORG2_USER' \
-  --header 'Content-Type: application/json' \
-  --data-raw '{
-    "fcn": "UpdateVote",
-    "channelName": "mychannel",
-    "chaincodeName": "planCC",
-    "transient": "",
-    "args": ["downvote", "plan1", "anoop"]
-  }'
+### Break down of test scripts
 
-  # TO END POLLING FOR A PLAN: Pass the Org1 User bearer token obtained from the previous step for authorization. Org2 (or City) user is not allowed this operation.
+1. registerUser.sh: Enrolls an admin and registers a user to the CA of a particular Org
+2. authenticateUser.sh: Once authenticated, the user on login is provided a JWT token. All the subsequent requests sent by the user from the platform makes use of this token in the payload header.
+3. createPlan.sh: This allows the Council user to be able to create a simple `plan-test`.
+4. updownvote.sh: This enables the City registered user to upvote and downvote the `plan-test` created above.
+5. endPolling.sh: End Polling stops polling for `plan-test`, deletes private collection for this plan and makes the votes public.
 
-  $> curl --location --request POST 'localhost:5000/channels/mychannel/chaincodes/planCC' \
-  --header 'Authorization: Bearer ACCESS_TOKEN_ORG1_USER' \
-  --header 'Content-Type: application/json' \
-  --data-raw '{
-    "fcn": "StopPolling",
-    "channelName": "mychannel",
-    "chaincodeName": "planCC",
-    "transient": "",
-    "args": ["plan1"]
-  }'
+## Contributing
 
-  # This removes the plan collection from persistence and updates the final up/down votes in the global collection.
-  ```
+Please read [CONTRIBUTING.md]() for details on our code of conduct, and the process for submitting pull requests to us.
+
+## License
+
+This project is licensed under the GNU GENERAL PUBLIC LICENSE - see the [LICENSE](LICENSE) file for details.
