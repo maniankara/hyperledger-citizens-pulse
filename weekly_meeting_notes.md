@@ -1,3 +1,22 @@
+16.08.2020
+ * Status
+ * Next Week:
+   - Anoop: Talk to mentorship program guys about GitHub Actions account handling
+   - User registration - email/password + bidirectional translation of users certs
+     - Local Cookie/Storage
+   - User delete/deactivation - if there is time
+   - Anoop: To send some summary for fabric-ca brush-up
+   - Project plan modifications:
+     - Add "User Registration and fabric-ca certificate translation"
+     - Modify "Setting-up functional tests and CI for API and backend"
+     - Move "Writing test req." to next phase
+     - Mark "Documentation" - done after moving it from phase 3->2
+     - Move "Dev. mobile" from phase 2->3
+   - Check how ReactJS functional tests are done
+   - Start knowing more about Flutter or something similar
+
+
+
 09.08.2020
  * Plan closing implementation - Demo
  * GitHub actions - Demo
