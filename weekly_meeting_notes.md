@@ -1,3 +1,22 @@
+23.08.2020
+ * This week:
+   - Demo: User registration (user pass + cert)
+ * Next week:
+   - Hyperledger Labs submission: (hrithik)
+      - Arch diagram
+      - Some recording of e.g. of startup -> docker ps -> generate api -> browser work flow (reg -> login -> upVote/DownVote/both -> view -> logout)
+      - review the proposal and add/remove contents
+      - Anoop: DCO script
+      - Anoop: Submit and find sponsor
+   - Comments:
+      - Certs encryption
+      - User del -> disabled
+      - Email as unique key instead of username
+   - Mobile:
+      - Flutter will be used
+      - Started learning, templates
+      - Will start something
+
 16.08.2020
  * Status
  * Next Week:
