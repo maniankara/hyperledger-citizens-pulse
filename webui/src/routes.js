@@ -24,6 +24,7 @@ import TableList from "views/Tables.js";
 import Maps from "views/Map.js";
 import UserPage from "views/User.js";
 import UpgradeToPro from "views/Upgrade.js";
+import ViewMyVotes from "views/ViewMyVotes";
 
 var routes = [
   {
@@ -33,13 +34,13 @@ var routes = [
     component: Dashboard,
     layout: "/admin",
   },
-  // {
-  //   path: "/icons",
-  //   name: "Icons",
-  //   icon: "nc-icon nc-diamond",
-  //   component: Icons,
-  //   layout: "/admin",
-  // },
+  {
+    path: "/viewvotes",
+    name: "View My Votes",
+    icon: "nc-icon nc-tap-01",
+    component: ViewMyVotes,
+    layout: "/admin",
+  },
   // {
   //   path: "/maps",
   //   name: "Maps",

@@ -16,10 +16,11 @@ import { BrowserRouter, Route, Switch, Link } from "react-router-dom";
 var options = {};
 options = {
   place: "tc",
-  message: "User registered successfully",
+  message: "",
   type: "success",
   icon: "now-ui-icons ui-1_bell-53",
   autoDismiss: 7,
+  type: "",
 };
 
 export class Signup extends Component {
@@ -27,6 +28,8 @@ export class Signup extends Component {
     super();
     this.state = {
       username: "",
+      password: "",
+      email: "",
       orgName: "Org1",
     };
   }
@@ -35,8 +38,9 @@ export class Signup extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  notifier(user) {
-    options.message = `${user} registered successfully!`;
+  notifier(message, type) {
+    options.message = message;
+    options.type = type;
     this.refs.notify.notificationAlert(options);
   }
 
@@ -55,16 +59,22 @@ export class Signup extends Component {
     };
 
     fetch("http://localhost:5000/signup", requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        this.notifier(this.state.username);
-        console.log(result);
+      .then((response) => {
+        if (response.status == 400) {
+          throw new Error("User/Email already exists!");
+        }
       })
-      .catch((error) => console.log("error", error));
+      .then((result) => {
+        this.notifier("Registered user successfully!", "success");
+      })
+      .catch((error) => {
+        this.notifier(error.message, "danger");
+        console.log("error", error);
+      });
   };
 
   render() {
-    let { username, orgName } = this.state;
+    let { username, password, email, orgName } = this.state;
     return (
       <>
         <Container className="mt-5">
@@ -99,7 +109,41 @@ export class Signup extends Component {
                       className="form-control"
                       onChange={(event) => this.handleChange(event)}
                     />
-                    <br />
+                    <label
+                      htmlFor="defaultFormRegisterNameEx"
+                      className="grey-text"
+                    >
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      placeholder="Enter password"
+                      name="password"
+                      value={password}
+                      className="form-control"
+                      onChange={(event) => this.handleChange(event)}
+                      // onChange={(e) => {
+                      //   setUserName(e.target.value);
+                      // }}
+                    />
+                    <label
+                      htmlFor="defaultFormRegisterNameEx"
+                      className="grey-text"
+                    >
+                      E-Mail
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="Enter email"
+                      name="email"
+                      value={email}
+                      className="form-control"
+                      onChange={(event) => this.handleChange(event)}
+                      // onChange={(e) => {
+                      //   setUserName(e.target.value);
+                      // }}
+                    />
+
                     <label
                       htmlFor="defaultFormRegisterPasswordEx"
                       className="grey-text"

@@ -23,6 +23,23 @@ Pull requests are the best way to propose changes to the codebase (we use [Githu
 5. Make sure your code lints.
 6. Issue that pull request!
 
+## Running the tests
+
+To check if the changes work fine, run a few tests to ensure working of the core functionalities.
+
+1. `cd` into the `network/tests` directory from project root. Run
+   ```
+   bash runAllTests.sh
+   ```
+
+### Break down of test scripts
+
+1. registerUser.sh: Enrolls an admin and registers a user to the CA of a particular Org
+2. authenticateUser.sh: Once authenticated, the user on login is provided a JWT token. All the subsequent requests sent by the user from the platform makes use of this token in the payload header.
+3. createPlan.sh: This allows the Council user to be able to create a simple `plan-test`.
+4. updownvote.sh: This enables the City registered user to upvote and downvote the `plan-test` created above.
+5. endPolling.sh: End Polling stops polling for `plan-test`, deletes private collection for this plan and makes the votes public.
+
 ## Report bugs using Github's [issues](https://github.com/maniankara/hyperledger-citizens-pulse/issues)
 
 We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/maniankara/hyperledger-citizens-pulse/issues/new); it's that easy!
