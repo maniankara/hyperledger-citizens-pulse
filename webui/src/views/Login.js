@@ -20,7 +20,7 @@ export default function Login() {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
   const [username, setUserName] = useState("");
-  const [orgName, setOrgName] = useState("Org1");
+  const [password, setPassword] = useState("");
   const { setAuthTokens } = useAuth();
 
   function handleSubmit(e) {
@@ -28,7 +28,7 @@ export default function Login() {
 
     const payload = {
       username: username,
-      orgName: orgName,
+      password: password,
     };
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -43,17 +43,17 @@ export default function Login() {
     };
 
     fetch("http://localhost:5000/authenticate", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (!result.success) {
-          setIsError(true);
-        } else {
-          setAuthTokens(result.token);
-          setLoggedIn(true);
+      .then((response) => {
+        if (response.status == 400) {
+          throw new Error("Incorrect username or password");
         }
+        return response.json();
+      })
+      .then((result) => {
+        setAuthTokens(result.token);
+        setLoggedIn(true);
       })
       .catch((error) => {
-        console.log("error", error);
         setIsError(true);
       });
   }
@@ -70,7 +70,7 @@ export default function Login() {
           <Col md="10">
             <Card className="card-stats">
               <CardBody>
-                <form>
+                <form onSubmit={handleSubmit} id="login">
                   <img
                     src="https://cdn4.iconfinder.com/data/icons/election-world-color/64/office-government-capitol-political-residence-512.png"
                     className="rounded mx-auto d-block"
@@ -98,7 +98,25 @@ export default function Login() {
                     }}
                   />
                   <br />
+
                   <label
+                    htmlFor="defaultFormRegisterPasswordEx"
+                    className="grey-text"
+                  >
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="Enter password"
+                    name="password"
+                    value={password}
+                    className="form-control"
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
+                  />
+
+                  {/* <label
                     htmlFor="defaultFormRegisterPasswordEx"
                     className="grey-text"
                   >
@@ -114,14 +132,14 @@ export default function Login() {
                   >
                     <option value="Org1">Org1</option>
                     <option value="Org2">Org2</option>
-                  </select>
+                  </select> */}
                 </form>
                 <br></br>
               </CardBody>
               <CardFooter>
                 <hr />
                 <div className="text-center mt-4">
-                  <Button color="unique" type="submit" onClick={handleSubmit}>
+                  <Button color="unique" type="submit" form="login">
                     Login
                   </Button>
                 </div>

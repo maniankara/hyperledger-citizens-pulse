@@ -7,7 +7,9 @@ const FabricCAServices = require("fabric-ca-client");
 const { Wallets } = require("fabric-network");
 const fs = require("fs");
 const path = require("path");
+const bcrypt = require("bcrypt");
 const util = require("util");
+const User = require("../src/user.model");
 
 const getCCP = async (org) => {
   let ccpPath;
@@ -98,7 +100,13 @@ const getUserDetails = async (username, userOrg, isJson) => {
   }
 };
 
-const getRegisteredUser = async (username, userOrg, isJson) => {
+const getRegisteredUser = async (
+  username,
+  userOrg,
+  password,
+  email,
+  isJson
+) => {
   try {
     let ccp = await getCCP(userOrg);
     const caUrl = await getCaUrl(userOrg, ccp);
@@ -132,7 +140,6 @@ const getRegisteredUser = async (username, userOrg, isJson) => {
       console.log("Admin Enrolled Successfully");
     }
 
-    // build a user object for authenticating with the CA
     const provider = wallet
       .getProviderRegistry()
       .getProvider(adminIdentity.type);
@@ -164,6 +171,17 @@ const getRegisteredUser = async (username, userOrg, isJson) => {
     console.log(
       `Successfully registered and enrolled admin user ${username} and imported it into the wallet`
     );
+
+    let user = new User({
+      username: username,
+      email: email,
+      password: password,
+      org: userOrg,
+      cert: x509Identity,
+    });
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
+    await user.save();
 
     var response = {
       success: true,

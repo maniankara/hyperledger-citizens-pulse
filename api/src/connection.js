@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-const User = require("./user.model");
-const connection = "mongodb://localhost:27017/mongo-votes";
+const connection = "mongodb://localhost:27017/citizen-pulse";
 
 const options = {
   useNewUrlParser: true,

@@ -16,7 +16,7 @@ const helper = require("./helper");
 const log4js = require("log4js");
 const crypto = require("crypto");
 const util = require("util");
-const User = require("../src/user.model");
+const UserVote = require("../src/vote.model");
 
 function sha256(data) {
   return crypto.createHash("sha256").update(data, "binary").digest("base64");
@@ -44,7 +44,7 @@ const fetchUserVote = async (username, org_name, planName) => {
     let cert = identity.credentials.certificate;
     let cert_hash = sha256(cert.concat(planName));
 
-    const result = await User.find({
+    const result = await UserVote.find({
       hash: cert_hash,
     })
       .exec()
