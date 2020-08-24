@@ -164,9 +164,9 @@ function delNet(){
     if find ../api/ -name 'org*' -printf 1 -quit | grep -q 1; then
       sudo rm -rf ../api/org*
     fi
-    if find ../api/ -name 'node*' -printf 1 -quit | grep -q 1; then
-      sudo rm -rf ../api/node*
-    fi
+    # if find ../api/ -name 'node*' -printf 1 -quit | grep -q 1; then
+    #   sudo rm -rf ../api/node*
+    # fi
     clearContainers
     removeUnwantedImages
     removeServerImages
@@ -191,10 +191,10 @@ function delUsers(){
 }
 
 function projectUp(){
+  webui;
+  api;
   createChannel;
   deployCC;
-  api;
-  webui;
 }
 
 function createUsers(){
