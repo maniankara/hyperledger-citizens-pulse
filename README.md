@@ -43,23 +43,6 @@ Following are a few dependencies that need to be installed:
    The CouchDB GUI showing all the databases and documents can be viewed at http://localhost:5984/_utils/. To make sure that the private-collections (meant for plan data persistence) have been created, check-out the `mychannel_plan$c$c\$$pcollection$plan` and `mychannel_plan$c$c\$$pcollection$plan$private$details` documents.
 5. Navigate to `http://localhost:3000/` in your browser. Signup `hritik` to `Org1` as a dummy user mandatorily.
 
-## Running the tests
-
-To check if the setup has been done correctly, run a few tests to ensure working of the core functionalities.
-
-1. `cd` into the `network/tests` directory from project root. Run
-   ```
-   bash runAllTests.sh
-   ```
-
-### Break down of test scripts
-
-1. registerUser.sh: Enrolls an admin and registers a user to the CA of a particular Org
-2. authenticateUser.sh: Once authenticated, the user on login is provided a JWT token. All the subsequent requests sent by the user from the platform makes use of this token in the payload header.
-3. createPlan.sh: This allows the Council user to be able to create a simple `plan-test`.
-4. updownvote.sh: This enables the City registered user to upvote and downvote the `plan-test` created above.
-5. endPolling.sh: End Polling stops polling for `plan-test`, deletes private collection for this plan and makes the votes public.
-
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.

@@ -20,7 +20,7 @@ const helper = require("./helper");
 const log4js = require("log4js");
 const logger = log4js.getLogger("PlanNet");
 const util = require("util");
-const User = require("../src/user.model");
+const UserVote = require("../src/vote.model");
 
 function sha256(data) {
   return crypto.createHash("sha256").update(data, "binary").digest("base64");
@@ -129,9 +129,12 @@ const invokeTransaction = async (
             }
 
             var query = { hash: cert_hash };
-            var payload_mongo = { hash: cert_hash, choice: user_vote };
+            var payload_mongo = {
+              hash: cert_hash,
+              choice: user_vote,
+            };
 
-            User.findOneAndUpdate(
+            UserVote.findOneAndUpdate(
               query,
               payload_mongo,
               { upsert: true, useFindAndModify: false },

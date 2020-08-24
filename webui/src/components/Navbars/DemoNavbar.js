@@ -50,11 +50,13 @@ class Header extends React.Component {
       planModal: false,
       username: "",
       orgName: "",
+      userid: "",
     };
     this.toggle = this.toggle.bind(this);
     this.dropdownToggle = this.dropdownToggle.bind(this);
     this.sidebarToggle = React.createRef();
     this.setModalShow = this.setModalShow.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
   }
 
   setModalShow(val) {
@@ -113,6 +115,25 @@ class Header extends React.Component {
     localStorage.clear();
   }
 
+  deleteUser() {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({ id: this.state.userid });
+
+    var requestOptions = {
+      method: "DELETE",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:5000/deleteuser", requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+  }
+
   componentDidMount() {
     window.addEventListener("resize", this.updateColor.bind(this));
     const token = localStorage.getItem("user_token");
@@ -137,10 +158,12 @@ class Header extends React.Component {
         this.setState({
           username: result.username,
           orgName: result.orgName,
+          userid: result.userid,
         });
       })
       .catch((error) => console.log("error", error));
   }
+
   componentDidUpdate(e) {
     if (
       window.innerWidth < 993 &&
@@ -212,7 +235,7 @@ class Header extends React.Component {
               onHide={() => this.setModalShow(false)}
               // onSubmit={() => this.setModalShow(false)}
             />
-            <form>
+            {/* <form>
               <InputGroup className="no-border">
                 <Input placeholder="Search..." />
                 <InputGroupAddon addonType="append">
@@ -221,16 +244,16 @@ class Header extends React.Component {
                   </InputGroupText>
                 </InputGroupAddon>
               </InputGroup>
-            </form>
+            </form> */}
             <Nav navbar>
-              <NavItem>
+              {/* <NavItem>
                 <Link to="#pablo" className="nav-link btn-magnify">
                   <i className="nc-icon nc-layout-11" />
                   <p>
                     <span className="d-lg-none d-md-block">Stats</span>
                   </p>
                 </Link>
-              </NavItem>
+              </NavItem> */}
               <Dropdown
                 nav
                 isOpen={this.state.dropdownOpen}
@@ -253,18 +276,22 @@ class Header extends React.Component {
                       Signout
                     </DropdownItem>
                   </Link>
+                  {/* <Link to="/signin"> */}
+                  <DropdownItem
+                    style={{
+                      textDecoration: "none",
+                      backgroundColor: "rgba(255, 0, 0, 0.4)",
+                    }}
+                    onClick={this.deleteUser}
+                    disabled
+                  >
+                    Delete Account
+                  </DropdownItem>
+                  {/* </Link> */}
                   {/* <DropdownItem tag="a">Another Action</DropdownItem>
                   <DropdownItem tag="a">Something else here</DropdownItem> */}
                 </DropdownMenu>
               </Dropdown>
-              <NavItem>
-                <Link to="#pablo" className="nav-link btn-rotate">
-                  <i className="nc-icon nc-settings-gear-65" />
-                  <p>
-                    <span className="d-lg-none d-md-block">Account</span>
-                  </p>
-                </Link>
-              </NavItem>
             </Nav>
           </Collapse>
         </Container>

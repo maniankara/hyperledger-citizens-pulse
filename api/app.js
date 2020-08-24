@@ -4,7 +4,10 @@ const bodyParser = require("body-parser");
 const log4js = require("log4js");
 const logger = log4js.getLogger("PlanNet");
 let cors = require("cors");
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 var jwt_decode = require("jwt-decode");
+const _ = require("lodash");
 
 const jwt = require("jsonwebtoken");
 const constants = require("./config/constants.json");
@@ -12,6 +15,7 @@ const constants = require("./config/constants.json");
 // make connection to mongodb storing user votes
 const connectDb = require("./src/connection");
 const User = require("./src/user.model");
+const UserVote = require("./src/vote.model");
 
 logger.level = "all";
 
@@ -27,6 +31,7 @@ var fetchUserVote = require("./actions/obtainUserVote");
 var pollComplete = require("./actions/pollComplete");
 const { json } = require("body-parser");
 const { Model } = require("mongoose");
+const { result } = require("lodash");
 
 const app = express();
 app.use(bodyParser.json());
@@ -41,19 +46,32 @@ app.use(
     secret: "randomsecret",
     algorithms: ["HS256"],
   }).unless({
-    path: ["/users", "/signup", "/authenticate", "/decode"],
+    path: [
+      "/getMyVotes",
+      "/signup",
+      "/authenticate",
+      "/decode",
+      "/listall",
+      "/deleteuser",
+    ],
   })
 );
 app.use(bearerToken());
 app.use(cors());
 
+function sha256(data) {
+  return crypto.createHash("sha256").update(data, "binary").digest("base64");
+}
+
 app.use((req, res, next) => {
   logger.debug("New req for %s", req.originalUrl);
   if (
-    req.originalUrl.indexOf("/users") >= 0 ||
+    req.originalUrl.indexOf("/getMyVotes") >= 0 ||
     req.originalUrl.indexOf("/signup") >= 0 ||
     req.originalUrl.indexOf("/authenticate") >= 0 ||
-    req.originalUrl.indexOf("/decode") >= 0
+    req.originalUrl.indexOf("/decode") >= 0 ||
+    req.originalUrl.indexOf("/listall") >= 0 ||
+    req.originalUrl.indexOf("/deleteuser") >= 0
   ) {
     return next();
   }
@@ -95,49 +113,6 @@ var server = app.listen(port, function () {
 
 logger.info("****************** SERVER STARTED ************************");
 logger.info("***************  http://%s:%s  ******************", host, port);
-
-app.post("/users", async function (req, res) {
-  var username = req.body.username;
-  var orgName = req.body.orgName;
-
-  logger.info("End point : /users");
-  logger.info("User name : " + username);
-  logger.info("Org name  : " + orgName);
-
-  var token = jwt.sign(
-    {
-      exp: Math.floor(Date.now() / 1000) + parseInt(constants.jwt_expiretime),
-      username: username,
-      orgName: orgName,
-    },
-    app.get("secret")
-  );
-
-  let response = await helper.getRegisteredUser(username, orgName, true);
-  logger.debug(
-    "-- returned from registering the username %s for organization %s",
-    username,
-    orgName
-  );
-
-  if (response && typeof response !== "string") {
-    logger.debug(
-      "Successfully registered the username %s for organization %s",
-      username,
-      orgName
-    );
-    response.token = token;
-    res.json(response);
-  } else {
-    logger.debug(
-      "Failed to register the username %s for organization %s with::%s",
-      username,
-      orgName,
-      response
-    );
-    res.json({ success: false, message: response });
-  }
-});
 
 app.post("/channels/:channelName/chaincodes/:chaincodeName", async function (
   req,
@@ -189,12 +164,28 @@ app.post("/channels/:channelName/chaincodes/:chaincodeName", async function (
 app.post("/signup", async function (req, res) {
   var username = req.body.username;
   var orgName = req.body.orgName;
+  var password = req.body.password;
+  var email = req.body.email;
 
   logger.info("End point : /signup");
   logger.info("User name : " + username);
   logger.info("Org name  : " + orgName);
+  logger.info("Email   : " + email);
 
-  let response = await helper.getRegisteredUser(username, orgName, true);
+  const foundUser = await User.findOne({ email: email });
+
+  if (foundUser) {
+    res.status(400).send("User with this email already exists!");
+    return response;
+  }
+
+  let response = await helper.getRegisteredUser(
+    username,
+    orgName,
+    password,
+    email,
+    true
+  );
   logger.debug(
     "-- returned from registering the username %s for organization %s",
     username,
@@ -207,7 +198,7 @@ app.post("/signup", async function (req, res) {
       username,
       orgName
     );
-    res.json(response);
+    res.status(200).json(response);
   } else {
     logger.debug(
       "Failed to register the username %s for organization %s with::%s",
@@ -215,40 +206,41 @@ app.post("/signup", async function (req, res) {
       orgName,
       response
     );
-    res.json({ success: false, message: response });
+    res.status(500).json({ success: false, message: response });
   }
 });
 
 app.post("/authenticate", async function (req, res) {
-  var username = req.body.username;
-  var orgName = req.body.orgName;
-
-  console.log(req.body);
-  logger.info("End point : /authenticate");
-  logger.info("User name : " + username);
-
-  let response = await helper.getUserDetails(username, orgName, true);
-  var result = {};
-  if (response.success) {
-    const userDetails = response.details;
-    const pubkey = userDetails.credentials.certificate;
-
-    var token = jwt.sign(
-      {
-        exp: Math.floor(Date.now() / 1000) + parseInt(constants.jwt_expiretime),
-        username: username,
-        orgName: orgName,
-      },
-      app.get("secret")
-    );
-
-    result.username = username;
-    result.success = true;
-    result.token = token;
-  } else {
-    result = response;
+  var user = await User.findOne({ username: req.body.username });
+  if (!user) {
+    return res.status(400).send("User does not exists!");
   }
-  res.send(result);
+  const validPassword = await bcrypt.compare(req.body.password, user.password);
+  if (!validPassword) {
+    return res.status(400).send("Incorrect password.");
+  }
+
+  logger.info("End point : /authenticate");
+  logger.info("User name : " + user.username);
+
+  var username = user["username"];
+  var orgName = user["org"];
+
+  var token = jwt.sign(
+    {
+      exp: Math.floor(Date.now() / 1000) + parseInt(constants.jwt_expiretime),
+      userid: user["_id"],
+      username: username,
+      orgName: orgName,
+    },
+    app.get("secret")
+  );
+  var result = {};
+  result.username = username;
+  result.success = true;
+  result.token = token;
+
+  res.status(200).send(result);
 });
 
 app.post("/decode", async function (req, res) {
@@ -294,3 +286,43 @@ app.post(
     res.send(result);
   }
 );
+
+app.post("/getMyVotes", async function (req, res) {
+  var username = req.body.username;
+  var orgName = req.body.orgName;
+  var planids = req.body.planids;
+
+  var user = await User.findOne({ username: req.body.username });
+  if (!user) {
+    return res.status(400).send("User does not exists!");
+  }
+  var pubkey = user.cert.credentials.certificate;
+
+  var list = [];
+
+  for (let i = 0; i < planids.length; i++) {
+    var planName = planids[i];
+    let cert_hash = sha256(pubkey.concat(planName));
+
+    let query = await UserVote.findOne({ hash: cert_hash }).lean();
+
+    if (query !== null) {
+      const resp = Object.assign(
+        {
+          plan: planName,
+        },
+        query
+      );
+      list.push(resp);
+    }
+  }
+  res.status(200).send(list);
+});
+
+app.delete("/deleteuser", async function (req, res) {
+  const deletedItem = await User.findByIdAndDelete(req.body.id).catch((err) =>
+    res.status(400).send(err.message)
+  );
+
+  res.status(200).send(deletedItem);
+});
