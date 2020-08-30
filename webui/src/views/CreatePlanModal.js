@@ -125,9 +125,10 @@ export class CreatePlanModal extends Component {
               <label htmlFor="description">Deadline</label>
               <input
                 required
-                type="text"
+                type="date"
                 name="deadline"
                 value={deadline}
+                min={new Date().toISOString().split("T")[0]}
                 className="form-control"
                 placeholder="Set a deadline for this poll"
                 onChange={(event) => this.handleChange(event)}

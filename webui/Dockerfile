@@ -2,10 +2,11 @@ FROM node:10
 RUN mkdir -p /usr/src/webui
 
 WORKDIR /usr/src/webui
-COPY . .
+COPY package*.json /usr/src/webui/
 
 RUN npm install
 
-EXPOSE 5000
+COPY . .
+EXPOSE 3000
 
 CMD ["npm", "start"]
