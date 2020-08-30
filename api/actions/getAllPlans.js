@@ -51,7 +51,14 @@ var getAllPlans = async function get(
     // Disconnect from the gateway.
     await gateway.disconnect();
     const temp = result.toString();
-    return JSON.parse(temp);
+    var all_plans = JSON.parse(temp);
+    all_plans.splice(
+      all_plans.findIndex(
+        (item) => item.planid === "plan1" || item.planid === "plan-test"
+      ),
+      1
+    );
+    return all_plans;
   } catch (error) {
     return error.message;
   }

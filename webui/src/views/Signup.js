@@ -11,7 +11,8 @@ import {
   Container,
 } from "reactstrap";
 import NotificationAlert from "react-notification-alert";
-import { BrowserRouter, Route, Switch, Link } from "react-router-dom";
+import Login from "./Login";
+import { BrowserRouter, Route, Switch, Link, Redirect } from "react-router-dom";
 
 var options = {};
 options = {
@@ -31,6 +32,7 @@ export class Signup extends Component {
       password: "",
       email: "",
       orgName: "Org1",
+      redirect: false,
     };
   }
 
@@ -66,6 +68,7 @@ export class Signup extends Component {
       })
       .then((result) => {
         this.notifier("Registered user successfully!", "success");
+        setTimeout(() => this.setState({ redirect: true }), 3000);
       })
       .catch((error) => {
         this.notifier(error.message, "danger");
@@ -75,6 +78,10 @@ export class Signup extends Component {
 
   render() {
     let { username, password, email, orgName } = this.state;
+
+    if (this.state.redirect) {
+      return <Redirect to="/signin" />;
+    }
     return (
       <>
         <Container className="mt-5">
@@ -179,65 +186,6 @@ export class Signup extends Component {
           </Row>
         </Container>
       </>
-      //   <MDBContainer className="mt-5">
-      //     <MDBRow>
-      //       <MDBCol md="12">
-      //         <form onSubmit={this.handleSubmit}>
-      //           <img
-      //             src="https://cdn4.iconfinder.com/data/icons/election-world-color/64/office-government-capitol-political-residence-512.png"
-      //             className="rounded mx-auto d-block"
-      //             alt="..."
-      //             style={{ maxWidth: "15%" }}
-      //           />
-      //           <p className="h6 text-center mb-4">Citizen Pulse</p>
-      //           <p className="h4 text-center mb-4">Sign Up</p>
-      //           <label htmlFor="defaultFormRegisterNameEx" className="grey-text">
-      //             Username
-      //           </label>
-      //           <input
-      //             type="text"
-      //             placeholder="Enter username"
-      //             name="username"
-      //             value={username}
-      //             className="form-control"
-      //             onChange={(event) => this.handleChange(event)}
-      //           />
-      //           <br />
-      //           <label
-      //             htmlFor="defaultFormRegisterPasswordEx"
-      //             className="grey-text"
-      //           >
-      //             Organisation MSP
-      //           </label>
-      //           <select
-      //             onChange={(event) => this.handleChange(event)}
-      //             className="browser-default custom-select"
-      //             name="orgName"
-      //           >
-      //             <option value="Org1">Org1</option>
-      //             <option value="Org2">Org2</option>
-      //           </select>
-      //           {/* <input
-      //             type="password"
-      //             placeholder="Enter password"
-      //             value={password}
-      //             name="password"
-      //             className="form-control"
-      //             onChange={(event) => this.handleChange(event)}
-      //           /> */}
-      //           <div className="text-center mt-4">
-      //             <MDBBtn color="unique" type="submit">
-      //               Register
-      //             </MDBBtn>
-      //             <NotificationAlert ref="notify" />
-      //           </div>
-      //           <div className="text-center mt-2">
-      //             <Link to="/signin">Sign In</Link>
-      //           </div>
-      //         </form>
-      //       </MDBCol>
-      //     </MDBRow>
-      //   </MDBContainer>
     );
   }
 }

@@ -162,7 +162,7 @@ class Dashboard extends React.Component {
       channelName: "mychannel",
       chaincodeName: "planCC",
       transient: "",
-      args: ["plan1", "plan99999"],
+      args: ["", ""],
     });
 
     var requestOptions = {
