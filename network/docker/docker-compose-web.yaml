@@ -7,7 +7,7 @@ services:
       context: ../../webui/
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "3000:3000"
     command: npm start
     volumes:
       - ../../webui/:/usr/src/webui/
