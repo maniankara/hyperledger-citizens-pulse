@@ -47,7 +47,7 @@ function clearContainers() {
 
 
 function removeServerImages() {
-  DOCKER_IMAGE_IDS=$(docker images | awk '($1 ~ /citizenpulse.*/) {print $3}')
+  DOCKER_IMAGE_IDS=$(docker images | awk '(($1 ~ /citizenpulse.*/) || ($1 ~ /mongo*/)) {print $3}')
   if [ -z "$DOCKER_IMAGE_IDS" -o "$DOCKER_IMAGE_IDS" == " " ]; then
     echo "---- No server images available for deletion ----"
   else
