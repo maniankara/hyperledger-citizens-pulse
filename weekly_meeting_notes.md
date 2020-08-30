@@ -1,3 +1,16 @@
+30.08.2020
+ * This week:
+   - Hyperledger labs, refactor branch
+   - Flutter started
+   - study: npm vs yarn: no difference, so no action
+   - Anoop: Less time spend on Hyperledger labs (+DCO)
+ * Next week:
+   - Flutter continues
+   - Mobile app: Integration with API
+   - Web: Have a generic user for now instead of hrithik
+   - Anoop: Submit HyperledgerLabs
+   - Anoop: To arrange: AWS host for backend (HF+web+api)
+   
 23.08.2020
  * This week:
    - Demo: User registration (user pass + cert)
