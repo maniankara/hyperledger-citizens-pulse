@@ -1,3 +1,20 @@
+06.09.2020
+ * Last week:
+   - Mobile application (flutter) - devapk ready - sign in/up, user dash board
+   - Learning: stateful, routing etc.
+ * This week:
+   - Anoop: provide elasticip for ec2 - t3a.small
+   - Anoop: test apk and raise bugs
+   - Fix small things
+   - Todo: create a plan by council
+   - commenting on the councils proposal
+   - comments:
+      - Should be stored in the chain
+      - Should not be visible publicly before plan closing
+      - Should be visible to all after closing
+      - The values are stored in apiserver's db (off-chain) and on-chain. But the sync is not ensured
+      - Possible to modify my own comments before closing (implementation can be taken separately if needed)
+
 30.08.2020
  * This week:
    - Hyperledger labs, refactor branch
