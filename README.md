@@ -12,6 +12,7 @@ Following are a few dependencies that need to be installed:
 
 - Git
 - Docker, Docker Compose
+- Go release, version 1.13 or greater
 - Node: any 12.x version starting with v12.0.0 or greater
 
 ### Installing
@@ -40,7 +41,7 @@ Following are a few dependencies that need to be installed:
    ./generate.sh api            # starts the API server, runs on localhost:5000
    ./generate.sh webui          # starts the Web server, runs on localhost:3000
    ```
-   The CouchDB GUI showing all the databases and documents can be viewed at http://localhost:5984/_utils/. To make sure that the private-collections (meant for plan data persistence) have been created, check-out the `mychannel_plan$c$c\$$pcollection$plan` and `mychannel_plan$c$c\$$pcollection$plan$private$details` documents.
+   The CouchDB GUI showing all the databases and documents can be viewed at http://localhost:5984/\_utils/. To make sure that the private-collections (meant for plan data persistence) have been created, check-out the `mychannel_plan$c$c\$$pcollection$plan` and `mychannel_plan$c$c\$$pcollection$plan$private$details` documents.
 5. Navigate to `http://localhost:3000/` in your browser. Signup `hritik` to `Org1` as a dummy user mandatorily.
 
 ## Contributing
