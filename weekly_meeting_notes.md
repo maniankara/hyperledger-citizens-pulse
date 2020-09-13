@@ -1,3 +1,19 @@
+13.09.2020
+  * Last week: Demo adding comments (todo: onchain, close plan comment consolidation)
+   - App: One drive for now
+  * This week:
+   - Complete the App
+   - On-drive publish folder for download
+      - TODO: Publish to android store (elastic IP)
+   - Anoop: testing
+   - Anoop: Publish Hyperledger labs
+   - Web: TODO:
+      - Time stamp
+      - Edit and delete (Think about this on-chain, option1: create a timeout for edit, remove delete button)
+      - Get the comment on-chain
+      - Close plan should consolidate the comments
+      - On-chain comment must be Anonymous user
+
 06.09.2020
  * Last week:
    - Mobile application (flutter) - devapk ready - sign in/up, user dash board
