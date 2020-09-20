@@ -1,13 +1,13 @@
 20.09.2020
  * Last week: Demo: comment plans. Bug(s): 2nd plan comment didnt appear
  * This week:
-  - Mobile App: pending tasks
-  - Web App: fix bugs
-  - Start thinking about reporting (graphs, charts etc.) and later on exporting (pdf, etc.) - 4th phase
-  - Anoop: To test webapp for comments and test it
-  - Anoop: To test mobile app and create bugs
-  - Suggestion: Document upload func. while plan creation, thoughts? IPFS?
-  - Thoughts: Federated/consortium orgs: {org1, org2}, {org3, org4}
+    - Mobile App: pending tasks
+    - Web App: fix bugs
+    - Start thinking about reporting (graphs, charts etc.) and later on exporting (pdf, etc.) - 4th phase
+    - Anoop: To test webapp for comments and test it
+    - Anoop: To test mobile app and create bugs
+    - Suggestion: Document upload func. while plan creation, thoughts? IPFS?
+    - Thoughts: Federated/consortium orgs: {org1, org2}, {org3, org4}
 
 13.09.2020
   * Last week: Demo adding comments (todo: onchain, close plan comment consolidation)
