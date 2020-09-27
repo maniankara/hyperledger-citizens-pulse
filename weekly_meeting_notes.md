@@ -1,3 +1,14 @@
+27.09.2020
+  * Last week: Demo: Edit button: TODO: 15 mins non-edit implementation
+    - Anoop: meeting with helsinki city+markus;
+  * This week:
+    - Anoop: To test webapp for comments and test it
+    - Anoop: To test mobile app and create bugs
+    - 15 min timeout finish
+    - Insights implementation
+    - Functional tests with WebUI
+    - Thoughts: Automatic plan closures?
+
 20.09.2020
  * Last week: Demo: comment plans. Bug(s): 2nd plan comment didnt appear
  * This week:
