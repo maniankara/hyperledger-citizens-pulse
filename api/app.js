@@ -32,6 +32,8 @@ var pollComplete = require("./actions/pollComplete");
 const { json } = require("body-parser");
 const { Model } = require("mongoose");
 const { result } = require("lodash");
+const { db } = require("./src/user.model");
+const { makeUserComments } = require("./actions/makeUserComments");
 
 const app = express();
 app.use(bodyParser.json());
@@ -176,7 +178,7 @@ app.post("/signup", async function (req, res) {
 
   if (foundUser) {
     res.status(400).send("User with this email already exists!");
-    return response;
+    return;
   }
 
   let response = await helper.getRegisteredUser(

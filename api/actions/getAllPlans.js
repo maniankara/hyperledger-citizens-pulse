@@ -52,12 +52,20 @@ var getAllPlans = async function get(
     await gateway.disconnect();
     const temp = result.toString();
     var all_plans = JSON.parse(temp);
+
+    all_plans = all_plans.sort(function (x, y) {
+      return x.IsActive === y.IsActive ? 0 : x.IsActive ? -1 : 1;
+    });
+
     all_plans.splice(
       all_plans.findIndex(
         (item) => item.planid === "plan1" || item.planid === "plan-test"
       ),
       1
     );
+
+    console.log(all_plans);
+
     return all_plans;
   } catch (error) {
     return error.message;
