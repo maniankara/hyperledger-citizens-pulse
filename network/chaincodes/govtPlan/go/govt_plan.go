@@ -15,27 +15,28 @@ import (
 )
 
 type Plan struct {
-	ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
-	PlanId       string `json:"planid"`    //the fieldtags are needed to keep case from bouncing around
-	Description      string `json:"description"`
-	Deadline      string `json:"deadline"`
-	FinalUpvote int `json:"finalupvote"`
-	FinalDownvote int `json:"finaldownvote"`
-	IsActive bool `json: "isactive"`
+	ObjectType    string   `json:"docType"` //docType is used to distinguish the various types of objects in state database
+	PlanId        string   `json:"planid"`  //the fieldtags are needed to keep case from bouncing around
+	Description   string   `json:"description"`
+	Deadline      string   `json:"deadline"`
+	FinalUpvote   int      `json:"finalupvote"`
+	FinalDownvote int      `json:"finaldownvote"`
+	IsActive      bool     `json: "isactive"`
+	FinalComments []string `json: "finalcomments"`
 }
 
 type PlanPrivateDetails struct {
-	ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
-	PlanId       string `json:"planid"`    //the fieldtags are needed to keep case from bouncing around
-	Upvote      int    `json:"upvote"`
-	Downvote      int    `json:"downvote"`
-	UserMap		map[string]int	`json:"usermap"`
+	ObjectType string              `json:"docType"` //docType is used to distinguish the various types of objects in state database
+	PlanId     string              `json:"planid"`  //the fieldtags are needed to keep case from bouncing around
+	Upvote     int                 `json:"upvote"`
+	Downvote   int                 `json:"downvote"`
+	UserMap    map[string]int      `json:"usermap"`
+	Comments   map[string][]string `json: "comments"`
 }
 
 type SmartContract struct {
 	contractapi.Contract
 }
-
 
 // inits a govt plan
 func (s *SmartContract) InitPlan(ctx contractapi.TransactionContextInterface) error {
@@ -52,15 +53,17 @@ func (s *SmartContract) InitPlan(ctx contractapi.TransactionContextInterface) er
 	}
 
 	type planTransientInput struct {
-		PlanId  string `json:"planid"` //the fieldtags are needed to keep case from bouncing around
-		Description string `json:"description"`
-		Deadline  string    `json:"deadline"`
-		Upvote int    `json:"upvote"`
-		Downvote int    `json:"downvote"`
-		FinalUpvote int    `json:"finalupvote"`
-		FinalDownvote int    `json:"finaldownvote"`
-		IsActive bool  		  `json:"isactive"`
-		UserMap map[string]int `json:"usermap"`
+		PlanId        string              `json:"planid"` //the fieldtags are needed to keep case from bouncing around
+		Description   string              `json:"description"`
+		Deadline      string              `json:"deadline"`
+		Upvote        int                 `json:"upvote"`
+		Downvote      int                 `json:"downvote"`
+		FinalUpvote   int                 `json:"finalupvote"`
+		FinalDownvote int                 `json:"finaldownvote"`
+		IsActive      bool                `json:"isactive"`
+		UserMap       map[string]int      `json:"usermap"`
+		Comments      map[string][]string `json: "comments"`
+		FinalComments []string            `json: "finalcomments"`
 	}
 
 	var planInput planTransientInput
@@ -78,16 +81,16 @@ func (s *SmartContract) InitPlan(ctx contractapi.TransactionContextInterface) er
 	if len(planInput.Deadline) == 0 {
 		return fmt.Errorf("deadline field must be a non-empty string")
 	}
-	if (planInput.Upvote > 0 || planInput.Upvote < 0) {
+	if planInput.Upvote > 0 || planInput.Upvote < 0 {
 		return fmt.Errorf("upvote field must be a zero during init")
 	}
-	if (planInput.Downvote > 0 || planInput.Downvote < 0) {
+	if planInput.Downvote > 0 || planInput.Downvote < 0 {
 		return fmt.Errorf("downvote field must be a zero during init")
 	}
-	if (planInput.FinalUpvote > 0 || planInput.FinalUpvote < 0) {
+	if planInput.FinalUpvote > 0 || planInput.FinalUpvote < 0 {
 		return fmt.Errorf("final-upvote field must be a zero during init")
 	}
-	if (planInput.FinalDownvote > 0 || planInput.FinalDownvote < 0) {
+	if planInput.FinalDownvote > 0 || planInput.FinalDownvote < 0 {
 		return fmt.Errorf("final-downvote field must be a zero during init")
 	}
 
@@ -101,14 +104,17 @@ func (s *SmartContract) InitPlan(ctx contractapi.TransactionContextInterface) er
 	}
 
 	// ==== Create plan object, marshal to JSON, and save to state ====
+	final_comments := []string{}
+
 	plan := &Plan{
-		ObjectType: "Plan",
-		PlanId:       planInput.PlanId,
-		Description:      planInput.Description,
+		ObjectType:    "Plan",
+		PlanId:        planInput.PlanId,
+		Description:   planInput.Description,
 		Deadline:      planInput.Deadline,
-		FinalUpvote: 	planInput.FinalUpvote,
-		FinalDownvote:	planInput.FinalDownvote,
-		IsActive: 		planInput.IsActive,
+		FinalUpvote:   planInput.FinalUpvote,
+		FinalDownvote: planInput.FinalDownvote,
+		IsActive:      planInput.IsActive,
+		FinalComments: final_comments,
 	}
 	planJSONasBytes, err := json.Marshal(plan)
 	if err != nil {
@@ -121,15 +127,17 @@ func (s *SmartContract) InitPlan(ctx contractapi.TransactionContextInterface) er
 		return fmt.Errorf("failed to put Plan: %s", err.Error())
 	}
 
+	user_comments := make(map[string][]string)
 	user_map := map[string]int{}
 
 	// ==== Create plan private details object with votes, marshal to JSON, and save to state ====
 	planPrivateDetails := &PlanPrivateDetails{
 		ObjectType: "PlanPrivateDetails",
-		PlanId:       planInput.PlanId,
-		Upvote:		planInput.Upvote,
-		Downvote: 	planInput.Downvote,
-		UserMap:	user_map,
+		PlanId:     planInput.PlanId,
+		Upvote:     planInput.Upvote,
+		Downvote:   planInput.Downvote,
+		UserMap:    user_map,
+		Comments:   user_comments,
 	}
 	planPrivateDetailsAsBytes, err := json.Marshal(planPrivateDetails)
 	if err != nil {
@@ -151,13 +159,13 @@ func (s *SmartContract) ReadPlan(ctx contractapi.TransactionContextInterface, pl
 
 	planJSON, err := ctx.GetStub().GetPrivateData("collectionPlan", planID) //get the plan from chaincode state
 	if err != nil {
-			return nil, fmt.Errorf("failed to read from plan %s", err.Error())
-		}
-		if planJSON == nil {
-			return nil, fmt.Errorf("%s does not exist", planID)
-		}
+		return nil, fmt.Errorf("failed to read from plan %s", err.Error())
+	}
+	if planJSON == nil {
+		return nil, fmt.Errorf("%s does not exist", planID)
+	}
 
-		plan := new(Plan)
+	plan := new(Plan)
 	_ = json.Unmarshal(planJSON, plan)
 
 	return plan, nil
@@ -169,25 +177,24 @@ func (s *SmartContract) ReadPlan(ctx contractapi.TransactionContextInterface, pl
 func (s *SmartContract) ReadPlanPrivateDetails(ctx contractapi.TransactionContextInterface, planID string) (*PlanPrivateDetails, error) {
 
 	planDetailsJSON, err := ctx.GetStub().GetPrivateData("collectionPlanPrivateDetails", planID) //get the plan from chaincode state
-		if err != nil {
-			return nil, fmt.Errorf("failed to read from plan details %s", err.Error())
-		}
-		if planDetailsJSON == nil {
-			return nil, fmt.Errorf("%s does not exist", planID)
-		}
+	if err != nil {
+		return nil, fmt.Errorf("failed to read from plan details %s", err.Error())
+	}
+	if planDetailsJSON == nil {
+		return nil, fmt.Errorf("%s does not exist", planID)
+	}
 
-		planDetails := new(PlanPrivateDetails)
+	planDetails := new(PlanPrivateDetails)
 	_ = json.Unmarshal(planDetailsJSON, planDetails)
 
 	return planDetails, nil
 }
 
-
 func (s *SmartContract) GetAllPlans(ctx contractapi.TransactionContextInterface, startKey string, endKey string) ([]Plan, error) {
 
 	resultsIterator, err := ctx.GetStub().GetPrivateDataByRange("collectionPlan", startKey, endKey)
 	if err != nil {
-			return nil, err
+		return nil, err
 	}
 	defer resultsIterator.Close()
 
@@ -203,7 +210,7 @@ func (s *SmartContract) GetAllPlans(ctx contractapi.TransactionContextInterface,
 
 		err = json.Unmarshal(response.Value, newPlan)
 		if err != nil {
-				return nil, err
+			return nil, err
 		}
 
 		results = append(results, *newPlan)
@@ -211,7 +218,6 @@ func (s *SmartContract) GetAllPlans(ctx contractapi.TransactionContextInterface,
 
 	return results, nil
 }
-
 
 func (s *SmartContract) UpdateVote(ctx contractapi.TransactionContextInterface) error {
 
@@ -226,10 +232,11 @@ func (s *SmartContract) UpdateVote(ctx contractapi.TransactionContextInterface) 
 	}
 
 	type planTransientInput struct {
-		PlanId  string `json:"planid"` //the fieldtags are needed to keep case from bouncing around
-		Upvote int `json:"upvote"`
-		Downvote int `json:"downvote"`
-		UserMap map[string]int `json:"usermap"`
+		PlanId   string              `json:"planid"` //the fieldtags are needed to keep case from bouncing around
+		Upvote   int                 `json:"upvote"`
+		Downvote int                 `json:"downvote"`
+		UserMap  map[string]int      `json:"usermap"`
+		Comments map[string][]string `json: "comments"`
 	}
 
 	var planInput planTransientInput
@@ -241,9 +248,10 @@ func (s *SmartContract) UpdateVote(ctx contractapi.TransactionContextInterface) 
 	planPrivateDetails := &PlanPrivateDetails{
 		ObjectType: "PlanPrivateDetails",
 		PlanId:     planInput.PlanId,
-		Upvote:		planInput.Upvote,
-		Downvote: 	planInput.Downvote,
-		UserMap:	planInput.UserMap,
+		Upvote:     planInput.Upvote,
+		Downvote:   planInput.Downvote,
+		UserMap:    planInput.UserMap,
+		Comments:   planInput.Comments,
 	}
 	planPrivateDetailsAsBytes, err := json.Marshal(planPrivateDetails)
 	if err != nil {
@@ -270,12 +278,13 @@ func (s *SmartContract) UpdateGlobalPlan(ctx contractapi.TransactionContextInter
 	}
 
 	type planTransientInput struct {
-		PlanId       string `json:"planid"`    //the fieldtags are needed to keep case from bouncing around
-		Description      string `json:"description"`
-		Deadline      string `json:"deadline"`
-		FinalUpvote int `json:"finalupvote"`
-		FinalDownvote int `json:"finaldownvote"`
-		IsActive	bool	`json:"isactive"`
+		PlanId        string   `json:"planid"` //the fieldtags are needed to keep case from bouncing around
+		Description   string   `json:"description"`
+		Deadline      string   `json:"deadline"`
+		FinalUpvote   int      `json:"finalupvote"`
+		FinalDownvote int      `json:"finaldownvote"`
+		IsActive      bool     `json:"isactive"`
+		FinalComments []string `json:"finalcomments"`
 	}
 
 	var planInput planTransientInput
@@ -285,13 +294,14 @@ func (s *SmartContract) UpdateGlobalPlan(ctx contractapi.TransactionContextInter
 	}
 
 	plan := &Plan{
-		ObjectType: "Plan",
-		PlanId:     planInput.PlanId,
-		Description: planInput.Description,
-		Deadline: planInput.Deadline,
-		FinalUpvote:	planInput.FinalUpvote,
-		FinalDownvote: 	planInput.FinalDownvote,
-		IsActive:		planInput.IsActive,
+		ObjectType:    "Plan",
+		PlanId:        planInput.PlanId,
+		Description:   planInput.Description,
+		Deadline:      planInput.Deadline,
+		FinalUpvote:   planInput.FinalUpvote,
+		FinalDownvote: planInput.FinalDownvote,
+		IsActive:      planInput.IsActive,
+		FinalComments: planInput.FinalComments,
 	}
 	planPrivateDetailsAsBytes, err := json.Marshal(plan)
 	if err != nil {
@@ -309,25 +319,25 @@ func (s *SmartContract) UpdateGlobalPlan(ctx contractapi.TransactionContextInter
 func (s *SmartContract) DeletePrivatePlan(ctx contractapi.TransactionContextInterface) error {
 
 	transMap, err := ctx.GetStub().GetTransient()
-		if err != nil {
-			return fmt.Errorf("Error getting transient: " + err.Error())
-		}
+	if err != nil {
+		return fmt.Errorf("Error getting transient: " + err.Error())
+	}
 
 	// Plan properties are private, therefore they get passed in transient field
 	transientDeletePlanJSON, ok := transMap["plan_delete"]
-		if !ok {
-			return fmt.Errorf("plan to delete not found in the transient map")
-		}
+	if !ok {
+		return fmt.Errorf("plan to delete not found in the transient map")
+	}
 
 	type planDelete struct {
-			PlanId string `json:"planid"`
-		}
+		PlanId string `json:"planid"`
+	}
 
 	var planDeleteInput planDelete
 	err = json.Unmarshal(transientDeletePlanJSON, &planDeleteInput)
-		if err != nil {
-			return fmt.Errorf("failed to unmarshal JSON: %s", err.Error())
-		}
+	if err != nil {
+		return fmt.Errorf("failed to unmarshal JSON: %s", err.Error())
+	}
 
 	if len(planDeleteInput.PlanId) == 0 {
 		return fmt.Errorf("planid field must be a non-empty string")
@@ -355,4 +365,3 @@ func main() {
 		fmt.Printf("Error starting private plans chaincode: %s", err.Error())
 	}
 }
-

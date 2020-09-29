@@ -21,6 +21,7 @@ const log4js = require("log4js");
 const logger = log4js.getLogger("PlanNet");
 const util = require("util");
 const UserVote = require("../src/vote.model");
+const PlanData = require("../src/planData.model");
 
 function sha256(data) {
   return crypto.createHash("sha256").update(data, "binary").digest("base64");
@@ -156,6 +157,138 @@ const invokeTransaction = async (
           .submit();
 
         message = `Transaction has been submitted. ${username} has ${option}d for ${planName}!`;
+      }
+    } else if (fcn == "AddComment") {
+      const planName = args[0]; // the plan user wants to upvote or downvote
+      const user_council = args[1]; // needed to fetch the current state of the private data collection
+      const comment_body = args[2];
+
+      let cert = identity.credentials.certificate;
+      let cert_hash = sha256(cert.concat(planName));
+
+      let planData;
+
+      var requestPlanState = await getPlanState
+        .state(user_council, planName, channelName, chaincodeName)
+        .then((res) => {
+          let curr_state = JSON.parse(res.toString("utf8"));
+          var commentsDict = curr_state["Comments"];
+
+          commentsDict[cert_hash] = commentsDict[cert_hash] || [];
+          commentsDict[cert_hash].push(comment_body);
+
+          planData = { plan: curr_state };
+        });
+
+      let key = Object.keys(planData)[0];
+      const transientDataBuffer = {};
+      transientDataBuffer[key] = Buffer.from(JSON.stringify(planData.plan));
+
+      result = await contract
+        .createTransaction("UpdateVote")
+        .setTransient(transientDataBuffer)
+        .submit();
+
+      var queryOptions = {
+        upsert: true,
+        useFindAndModify: false,
+        new: true,
+      };
+      var comment = { comment: comment_body, createdAt: Date.now() };
+
+      PlanData.findOneAndUpdate(
+        { hash: cert_hash },
+        { $push: { comments: comment } },
+        queryOptions,
+        function (err, doc) {
+          if (err) return err;
+        }
+      );
+      message = `Transaction has been submitted. ${username} has commented on ${planName}!`;
+    } else if (fcn == "EditComment") {
+      const planName = args[0]; // the plan user wants to upvote or downvote
+      const user_council = args[1]; // needed to fetch the current state of the private data collection
+      var plansJSON = args[2];
+
+      let modifCommentIndex = parseInt(plansJSON["index"]);
+      let modifCommentData = plansJSON["data"];
+      let modifCommentTime = modifCommentData["createdAt"];
+      let modifComment = modifCommentData["comment"];
+
+      let cert = identity.credentials.certificate;
+      let cert_hash = sha256(cert.concat(planName));
+
+      let planData;
+
+      /*
+       * Check if the modified comment is created with
+       * 15 mins of the posted comment
+       * if not, then DONT MODIFY COMMENT
+       */
+      var expired = false;
+      var checkTimeout = await PlanData.findOne({ hash: cert_hash }, function (
+        err,
+        doc
+      ) {
+        if (err) return err;
+
+        let totComments = doc.comments.length - 1;
+        let differenceEpoch =
+          modifCommentTime -
+          doc.comments[totComments - modifCommentIndex].createdAt;
+
+        let differenceMinutes = differenceEpoch / 60 / 1000;
+
+        if (differenceMinutes > 15) {
+          message = `Comment update period timed out.`;
+          expired = true;
+        }
+      });
+
+      if (expired === false) {
+        var requestPlanState = await getPlanState
+          .state(user_council, planName, channelName, chaincodeName)
+          .then((res) => {
+            let curr_state = JSON.parse(res.toString("utf8"));
+            var commentsDict = curr_state["Comments"];
+            let totComments = commentsDict[cert_hash].length - 1;
+
+            commentsDict[cert_hash][
+              totComments - modifCommentIndex
+            ] = modifComment;
+
+            planData = { plan: curr_state };
+          });
+
+        let key = Object.keys(planData)[0];
+        const transientDataBuffer = {};
+        transientDataBuffer[key] = Buffer.from(JSON.stringify(planData.plan));
+
+        result = await contract
+          .createTransaction("UpdateVote")
+          .setTransient(transientDataBuffer)
+          .submit();
+
+        var queryOptions = {
+          upsert: false,
+          useFindAndModify: true,
+        };
+
+        PlanData.findOne({ hash: cert_hash }, function (err, doc) {
+          if (err) return err;
+
+          let totComments = doc.comments.length - 1;
+
+          doc.comments[totComments - modifCommentIndex].comment = modifComment;
+          doc.comments[
+            totComments - modifCommentIndex
+          ].createdAt = modifCommentTime;
+
+          doc.markModified("comments");
+          doc.save();
+        });
+
+        message = `Transaction has been submitted. ${username} has edited comment on ${planName}!`;
       }
     } else if (fcn == "InitPlan") {
       if (org_name == "Org2") {

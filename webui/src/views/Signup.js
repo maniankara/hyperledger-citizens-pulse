@@ -62,8 +62,8 @@ export class Signup extends Component {
 
     fetch("http://localhost:5000/signup", requestOptions)
       .then((response) => {
-        if (response.status == 400) {
-          throw new Error("User/Email already exists!");
+        if (response.status != 200) {
+          throw new Error("Oops, some error occurred");
         }
       })
       .then((result) => {
