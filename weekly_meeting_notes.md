@@ -1,3 +1,17 @@
+04.10.2020
+ * Last week: Edit comment
+   - Rendering chats can be a problematic, sentimental analysis
+   - Apk Debugging
+   
+ * Next Week:
+   - Insights -> report, 
+   - Create a simple charts (insights) when plan is clicked. upvote/downvote, per orgs etc.
+   - Add 'Insights and reports' task to the project plan to 4th phase.
+   - Setup script to create 'hritik'/'admin' user to Org1
+   - Anoop: Android developer account, hyperledger store?
+   - TODO: Timed plan closure, check TUPAS, Federated organisations, Hard coded org1 user
+
+
 27.09.2020
   * Last week: Demo: Edit button: TODO: 15 mins non-edit implementation
     - Anoop: meeting with helsinki city+markus;
