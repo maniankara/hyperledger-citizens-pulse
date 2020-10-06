@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const CommentsSchema = require("./comment.model");
+
 const uservoteSchema = new mongoose.Schema(
   {
     hash: {

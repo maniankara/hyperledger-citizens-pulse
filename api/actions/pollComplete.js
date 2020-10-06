@@ -52,7 +52,8 @@ var pollComplete = async function endPoll(
   // Get the contract from the network.
   const contract = network.getContract(chaincodeName);
   let final_upvotes = 0,
-    final_downvotes = 0;
+    final_downvotes = 0,
+    final_comments = [];
 
   try {
     let planVoteData;
@@ -69,14 +70,21 @@ var pollComplete = async function endPoll(
         final_downvotes = curr_state.downvote;
       });
 
+    var commentDict = planVoteData["Comments"];
+    Object.keys(commentDict).forEach(function (key, index) {
+      final_comments = final_comments.concat(commentDict[key]);
+    });
+
     const result = await contract.evaluateTransaction("ReadPlan", planName);
     let global_state = JSON.parse(result.toString("utf8"));
 
     global_state.finalupvote = final_upvotes;
     global_state.finaldownvote = final_downvotes;
     global_state.IsActive = false;
+    global_state.FinalComments = final_comments;
 
     let planData = { plan: global_state };
+
     let key = Object.keys(planData)[0];
     const transientDataBuffer = {};
     transientDataBuffer[key] = Buffer.from(JSON.stringify(planData.plan));
@@ -114,6 +122,8 @@ var pollComplete = async function endPoll(
       message: message,
     };
     return end_response;
+
+    return {};
   } catch (error) {
     return error.message;
   }
