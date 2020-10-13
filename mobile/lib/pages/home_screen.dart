@@ -83,14 +83,15 @@ class _HomeScreenState extends State<HomeScreen> {
           headers: {HttpHeaders.authorizationHeader: "Bearer $_token", "Content-Type": "application/json"},
       );
       var resJSON = jsonDecode(response.body);
-      int _fetchedChoice = resJSON['choice'];
 
-      PlanList[i].choice = _fetchedChoice;
-      setState(() {
-        PlanList;
-        loading = false;
-      });
+      if(resJSON.containsKey("choice")){
+        PlanList[i].choice = int.parse(resJSON["choice"]);
+      }
     }
+    setState(() {
+      PlanList;
+      loading = false;
+    });
   }
 
 
