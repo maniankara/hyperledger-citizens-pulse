@@ -1,3 +1,21 @@
+18.10.2020
+   * Last week:
+   * Next week:
+      - Code coverage badges
+      - TODO: Timed plan closure, check TUPAS, Federated organisations
+      - Functional tests
+
+14.10.2020
+   * Last week: Meeting with DBE Core, Business Tampere
+   * Next week:
+      - Anoop: Talk with Vipin/Min: Android store account
+      - Anoop: App testing: mobile branch
+      - Anoop: Test insights: insights branch
+      - Fix App bugs
+      - First time admin user UI
+      - App UI features - commenting features
+      - light weight JS Pub sub frameworks
+
 04.10.2020
  * Last week: Edit comment
    - Rendering chats can be a problematic, sentimental analysis
