@@ -1,16 +1,26 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/* This module is responsible for getting the current value of upvote and downvote count
+ of a particular plan persisiting in the private collection */
+
+"use strict";
+
 const { Gateway, Wallets } = require("fabric-network");
+const path = require("path");
+const fs = require("fs");
 const helper = require("./helper");
 
-var getAllPlans = async function get(
+var state = async function returnState(
   username,
-  org_name,
+  orgName,
+  planName,
   channelName,
-  chaincodeName,
-  startKey,
-  endKey
+  chaincodeName
 ) {
   try {
     // load the network configuration
+    const org_name = orgName;
     const ccp = await helper.getCCP(org_name);
 
     // Create a new file system based wallet for managing identities.
@@ -25,7 +35,6 @@ var getAllPlans = async function get(
       console.log("Run the registerUser.js application before retrying");
       return;
     }
-
     // Create a new gateway for connecting to our peer node.
     const gateway = new Gateway();
     await gateway.connect(ccp, {
@@ -33,41 +42,18 @@ var getAllPlans = async function get(
       identity: username,
       discovery: { enabled: true, asLocalhost: true },
     });
-
-    let cert = identity.credentials.certificate;
-    let message;
-
     // Get the network (channel) our contract is deployed to.
     const network = await gateway.getNetwork(channelName);
-
     // Get the contract from the network.
     const contract = network.getContract(chaincodeName);
+    // Evaluate the specified transaction.
+    const result = await contract.evaluateTransaction("ReadPlan", planName);
 
-    const result = await contract.evaluateTransaction(
-      "GetAllPlans",
-      startKey,
-      endKey
-    );
-    // Disconnect from the gateway.
-    await gateway.disconnect();
-    const temp = result.toString();
-    var all_plans = JSON.parse(temp);
-
-    all_plans = all_plans.sort(function (x, y) {
-      return x.IsActive === y.IsActive ? 0 : x.IsActive ? -1 : 1;
-    });
-
-    all_plans.splice(
-      all_plans.findIndex(
-        (item) => item.planid === "plan1" || item.planid === "plan-test"
-      ),
-      1
-    );
-
-    return all_plans;
+    return result;
   } catch (error) {
-    return error.message;
+    console.log("error: ", error.message);
+    return error;
   }
 };
 
-module.exports.getAllPlans = getAllPlans;
+module.exports.state = state;

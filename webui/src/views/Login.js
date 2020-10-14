@@ -60,11 +60,11 @@ export default function Login() {
 
   var token = localStorage.getItem("user_token");
   if (typeof token !== "undefined" && token !== null) {
-    return <Redirect to="/admin/dashboard" />;
+    return <Redirect to="/dashboard/polls" />;
   }
 
   if (isLoggedIn) {
-    return <Redirect to="/admin/dashboard" />;
+    return <Redirect to="/dashboard/polls" />;
   }
 
   return (

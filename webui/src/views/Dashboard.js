@@ -12,6 +12,8 @@ import {
   Col,
   Button,
   Table,
+  Tooltip,
+  UncontrolledAlert,
 } from "reactstrap";
 // core components
 
@@ -338,6 +340,9 @@ class Dashboard extends React.Component {
     return (
       <>
         <div className="content">
+          <UncontrolledAlert color="info">
+            Click on a plan to view insights
+          </UncontrolledAlert>
           <Row>
             <Col md="12">
               {this.state.plans.map((plan, idx) => {
@@ -348,7 +353,19 @@ class Dashboard extends React.Component {
                   <Card key={headerid + "0"}>
                     <CardHeader key={headerid}>
                       <CardTitle tag="h5" key={headerid}>
-                        {plan.planid}
+                        <span
+                          onClick={() =>
+                            this.props.history.push(
+                              `/insights?planid=${plan.planid}`,
+                              {
+                                username: this.state.username,
+                                orgName: this.state.orgName,
+                              }
+                            )
+                          }
+                        >
+                          {plan.planid}
+                        </span>
                       </CardTitle>
                       <p className="card-category" key={headerid + "0"}>
                         Ends on {plan.deadline}
@@ -435,10 +452,10 @@ class Dashboard extends React.Component {
                         )}
                       </div>
                       <div className="mt-4">
-                        <label>Comments</label>
-
                         {plan.IsActive ? (
                           <>
+                            <label>Comments</label>
+
                             <form
                               onSubmit={this.commentHandler(plan.planid, idx)}
                             >
@@ -539,12 +556,12 @@ class Dashboard extends React.Component {
                           </>
                         ) : (
                           <div>
-                            <Table size="sm">
+                            {/* <Table size="sm">
                               <tbody>
                                 {plan.FinalComments &&
                                   plan.FinalComments.map((comment, idx) => {
                                     return (
-                                      <tr>
+                                      <tr key={`comment-${idx}`}>
                                         <td colSpan="1">
                                           <i className="nc-icon nc-single-02"></i>
                                         </td>
@@ -553,7 +570,7 @@ class Dashboard extends React.Component {
                                     );
                                   })}
                               </tbody>
-                            </Table>
+                            </Table> */}
                           </div>
                         )}
                       </div>
