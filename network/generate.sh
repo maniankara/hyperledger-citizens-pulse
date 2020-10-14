@@ -180,6 +180,8 @@ function deployCC(){
 
 function api(){
   IMAGE_TAG=$IMAGE_TAG docker-compose -f $COMPOSE_FILE_API up -d 2>&1
+  sleep 3
+  createInitOrg1User
 }
 
 function webui(){
@@ -195,6 +197,20 @@ function projectUp(){
   api;
   createChannel;
   deployCC;
+}
+
+function createInitOrg1User(){
+    echo "##########################################################"
+    echo "############ Registering user to ORG 1 ###################"
+    echo "##########################################################"
+
+    curl --location --request POST 'http://localhost:5000/signup' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+    "username": "hritik",
+    "orgName": "Org1"
+    }'
+    echo
 }
 
 function createUsers(){

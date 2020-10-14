@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 var jwt_decode = require("jwt-decode");
 const _ = require("lodash");
+var encoding = require("encoding");
 
 const jwt = require("jsonwebtoken");
 const constants = require("./config/constants.json");
@@ -16,6 +17,10 @@ const constants = require("./config/constants.json");
 const connectDb = require("./src/connection");
 const User = require("./src/user.model");
 const UserVote = require("./src/vote.model");
+var createInsights = require("./actions/createInsights");
+var getGlobalState = require("./actions/getGlobalState");
+
+const { type } = require("os");
 
 logger.level = "all";
 
@@ -328,3 +333,42 @@ app.delete("/deleteuser", async function (req, res) {
 
   res.status(200).send(deletedItem);
 });
+
+app.get(
+  "/download-insights/user/:username/org/:orgname/plan/:planName/",
+  async function (req, res) {
+    var username = req.params.username;
+    var planName = req.params.planName;
+    var orgName = req.params.orgname;
+
+    var result = {};
+    console.log(username, planName, orgName);
+    var temp = await createInsights
+      .createInsights(username, orgName, planName, "mychannel", "planCC")
+      .then((doc) => {
+        var data = doc.output();
+        var buffer = encoding.convert(data, "Latin_1");
+        res.send(buffer);
+
+        // ===========================
+
+        // let pdf_name = "a4.pdf";
+        // res.download(pdf_name);
+      });
+  }
+);
+
+app.get(
+  "/getGlobalState/user/:username/org/:orgname/plan/:planName/",
+  async function (req, res) {
+    var username = req.params.username;
+    var planName = req.params.planName;
+    var orgName = req.params.orgname;
+
+    var res = await getGlobalState
+      .state(username, orgName, planName, "mychannel", "planCC")
+      .then((data) => {
+        res.status(200).send(data);
+      });
+  }
+);

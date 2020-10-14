@@ -20,6 +20,7 @@ import Login from "./views/Login";
 
 import PrivateRoute from "./components/FixedPlugin/PrivateRoute";
 import { AuthContext } from "./components/context/auth";
+import PlanInsights from "views/PlanInsights";
 
 const hist = createBrowserHistory();
 
@@ -39,8 +40,9 @@ function App(props) {
           <Route exact path="/" component={Login}></Route>
           <Route path="/signin" component={Login}></Route>
           <Route path="/signup" component={Signup}></Route>
+          <PrivateRoute path="/insights" component={PlanInsights} />
           <PrivateRoute
-            path="/admin"
+            path="/dashboard"
             component={AdminLayout}
             render={(props) => <AdminLayout {...props} />}
           />

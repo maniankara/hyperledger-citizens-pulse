@@ -28,18 +28,18 @@ import ViewMyVotes from "views/ViewMyVotes";
 
 var routes = [
   {
-    path: "/dashboard",
+    path: "/polls",
     name: "Council Polls",
     icon: "nc-icon nc-bank",
     component: Dashboard,
-    layout: "/admin",
+    layout: "/dashboard",
   },
   {
     path: "/viewvotes",
     name: "View My Votes",
     icon: "nc-icon nc-tap-01",
     component: ViewMyVotes,
-    layout: "/admin",
+    layout: "/dashboard",
   },
   // {
   //   path: "/maps",
