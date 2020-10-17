@@ -28,6 +28,8 @@ const bearerToken = require("express-bearer-token");
 var helper = require("./actions/helper");
 var invoke = require("./actions/invoke");
 var fetchUserVote = require("./actions/obtainUserVote");
+var adminExists = require("./actions/checkForAdmin");
+
 var pollComplete = require("./actions/pollComplete");
 const { json } = require("body-parser");
 const { Model } = require("mongoose");
@@ -55,6 +57,7 @@ app.use(
       "/decode",
       "/listall",
       "/deleteuser",
+      "/admin-exists"
     ],
   })
 );
@@ -73,7 +76,8 @@ app.use((req, res, next) => {
     req.originalUrl.indexOf("/authenticate") >= 0 ||
     req.originalUrl.indexOf("/decode") >= 0 ||
     req.originalUrl.indexOf("/listall") >= 0 ||
-    req.originalUrl.indexOf("/deleteuser") >= 0
+    req.originalUrl.indexOf("/deleteuser") >= 0 ||
+    req.originalUrl.indexOf("admin-exists") >= 0
   ) {
     return next();
   }
@@ -327,4 +331,10 @@ app.delete("/deleteuser", async function (req, res) {
   );
 
   res.status(200).send(deletedItem);
+});
+
+app.get("/admin-exists", async function(req, res){
+  const doesExists = adminExists.checkAdmin("Org1").then((value) => {
+    res.send(value);
+  });
 });
