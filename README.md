@@ -44,6 +44,21 @@ Following are a few dependencies that need to be installed:
    The CouchDB GUI showing all the databases and documents can be viewed at http://localhost:5984/\_utils/. To make sure that the private-collections (meant for plan data persistence) have been created, check-out the `mychannel_plan$c$c\$$pcollection$plan` and `mychannel_plan$c$c\$$pcollection$plan$private$details` documents.
 5. Navigate to `http://localhost:3000/` in your browser. Signup `hritik` to `Org1` as a dummy user mandatorily.
 
+
+## Testing (Manual)
+### Web
+### Mobile - Testing with Android emulator
+* Setup
+1. Start the emulator/AVD
+2. Add a device which supports API 28 (at the time of writing)
+3. Drag and Drop the .apk file on top of the device and accept for installation
+* Test login
+1. Provide credentials `user/test`
+
+### Mobile - Testing with real device
+This is to handle times when you do not have a device to test the mobile part
+
+
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
