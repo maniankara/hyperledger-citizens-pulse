@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdbreact";
 import {
   Card,
@@ -13,6 +13,7 @@ import {
 } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.css";
 
+
 import { Link, Redirect } from "react-router-dom";
 import { useAuth } from "../components/context/auth";
 import { API_BASE_URL } from "../constant";
@@ -22,7 +23,34 @@ export default function Login() {
   const [isError, setIsError] = useState(false);
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [adminExists, setAdminExists] = useState(true);
   const { setAuthTokens } = useAuth();
+
+  useEffect(() => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:5000/admin-exists")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          setAdminExists(result);
+        },
+        (error) => {
+          setIsError(error);
+        }
+      )
+  }, []);
+
+  if (!adminExists) {
+    return <Redirect to="/signup-admin" />;
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
