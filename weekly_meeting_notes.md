@@ -1,9 +1,24 @@
+25.10.2020
+  * Last week
+  * Next week:
+    - TODO: Federated organisations
+
 18.10.2020
    * Last week:
+      - Anoop: App testing: mobile branch
+      - First start page - first user
+      - PR for plan closure, with cron (node)
+      - Android commenting feature
    * Next week:
+      - Anoop: App testing: mobile branch + commenting feature
+      - Anoop: Test insights: insights branch
+      - Anoop: WebApp first start page
+      - Anoop: Talk with Vipin/Min: Android store account
+      - Instructions for first start page
+      - Fix bugs
       - Code coverage badges
-      - TODO: Timed plan closure, check TUPAS, Federated organisations
       - Functional tests
+      - Blog post planning
 
 14.10.2020
    * Last week: Meeting with DBE Core, Business Tampere
