@@ -21,6 +21,8 @@ var createInsights = require("./actions/createInsights");
 var getGlobalState = require("./actions/getGlobalState");
 
 const { type } = require("os");
+var cron = require("node-cron");
+const CronClosure = require("./actions/cronPlanClose");
 
 logger.level = "all";
 
@@ -120,6 +122,8 @@ var server = app.listen(port, function () {
 
 logger.info("****************** SERVER STARTED ************************");
 logger.info("***************  http://%s:%s  ******************", host, port);
+
+cron.schedule("0 0 0 * * *", async () => CronClosure.closeExpired());
 
 app.post("/channels/:channelName/chaincodes/:chaincodeName", async function (
   req,
