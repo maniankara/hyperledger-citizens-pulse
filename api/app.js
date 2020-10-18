@@ -16,6 +16,8 @@ const constants = require("./config/constants.json");
 const connectDb = require("./src/connection");
 const User = require("./src/user.model");
 const UserVote = require("./src/vote.model");
+var cron = require("node-cron");
+const CronClosure = require("./actions/cronPlanClose");
 
 logger.level = "all";
 
@@ -115,6 +117,8 @@ var server = app.listen(port, function () {
 
 logger.info("****************** SERVER STARTED ************************");
 logger.info("***************  http://%s:%s  ******************", host, port);
+
+cron.schedule("0 0 0 * * *", async () => CronClosure.closeExpired());
 
 app.post("/channels/:channelName/chaincodes/:chaincodeName", async function (
   req,
