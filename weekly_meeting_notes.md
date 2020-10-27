@@ -1,7 +1,20 @@
-25.10.2020
+01.11.2020
+ * Last week
+ * Next week
+   - TODO: Federated organisations
+
+27.10.2020
   * Last week
+    - Bug fixes
+    - code coverage badge: start with manual
   * Next week:
-    - TODO: Federated organisations
+    - Anoop: App testing: mobile branch + commenting feature
+    - Anoop: Test insights: insights branch
+    - Anoop: Talk with Vipin/Min: Android store account
+    - Anoop: Talk with Min about blog publishing
+    - Start drafting the blog
+    - Implement releases - On need basis automatically with minimal manual work.
+    - Implement installation instructions/scripts from releases
 
 18.10.2020
    * Last week:
