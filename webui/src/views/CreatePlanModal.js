@@ -4,6 +4,7 @@ import React from "react";
 import Modal from "react-bootstrap/Modal";
 import NotificationAlert from "react-notification-alert";
 import { Button } from "reactstrap";
+import { API_BASE_URL } from "../constant";
 
 import { Component } from "react";
 
@@ -68,7 +69,7 @@ export class CreatePlanModal extends Component {
     };
 
     fetch(
-      "http://localhost:5000/channels/mychannel/chaincodes/planCC",
+      `${API_BASE_URL}/channels/mychannel/chaincodes/planCC`,
       requestOptions
     )
       .then((response) => response.json())

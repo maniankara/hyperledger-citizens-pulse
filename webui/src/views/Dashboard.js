@@ -13,6 +13,7 @@ import {
   Button,
   Table,
 } from "reactstrap";
+import { API_BASE_URL } from "../constant";
 // core components
 
 class Dashboard extends React.Component {
@@ -67,7 +68,7 @@ class Dashboard extends React.Component {
     };
 
     fetch(
-      "http://localhost:5000/channels/mychannel/chaincodes/planCC",
+      `${API_BASE_URL}/channels/mychannel/chaincodes/planCC`,
       requestOptions
     )
       .then((response) => response.json())
@@ -92,7 +93,7 @@ class Dashboard extends React.Component {
     };
 
     fetch(
-      `http://localhost:5000/user_vote/${username}/${orgName}/${planName}`,
+      `${API_BASE_URL}/user_vote/${username}/${orgName}/${planName}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -129,7 +130,7 @@ class Dashboard extends React.Component {
 
     const planid = e.target.id;
     fetch(
-      `http://localhost:5000/close-voting/user/${this.state.username}/org/${this.state.orgName}/plan/${planid}/`,
+      `${API_BASE_URL}/close-voting/user/${this.state.username}/org/${this.state.orgName}/plan/${planid}/`,
       requestOptions
     )
       .then((response) => response.json())
@@ -157,7 +158,7 @@ class Dashboard extends React.Component {
       redirect: "follow",
     };
 
-    fetch("http://localhost:5000/decode", requestOptions)
+    fetch(`${API_BASE_URL}/decode`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         this.setState({
@@ -192,7 +193,7 @@ class Dashboard extends React.Component {
     };
 
     fetch(
-      "http://localhost:5000/channels/mychannel/chaincodes/planCC",
+      `${API_BASE_URL}/channels/mychannel/chaincodes/planCC`,
       requestOptions
     )
       .then((response) => response.json())
@@ -263,7 +264,7 @@ class Dashboard extends React.Component {
     };
 
     fetch(
-      "http://localhost:5000/channels/mychannel/chaincodes/planCC",
+      `${API_BASE_URL}/channels/mychannel/chaincodes/planCC`,
       requestOptions
     )
       .then((response) => {
@@ -319,7 +320,7 @@ class Dashboard extends React.Component {
     };
 
     fetch(
-      "http://localhost:5000/channels/mychannel/chaincodes/planCC",
+      `${API_BASE_URL}/channels/mychannel/chaincodes/planCC`,
       requestOptions
     )
       .then((response) => {
