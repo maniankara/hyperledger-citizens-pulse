@@ -57,7 +57,7 @@ app.use(
       "/decode",
       "/listall",
       "/deleteuser",
-      "/admin-exists"
+      "/admin-exists",
     ],
   })
 );
@@ -333,7 +333,7 @@ app.delete("/deleteuser", async function (req, res) {
   res.status(200).send(deletedItem);
 });
 
-app.get("/admin-exists", async function(req, res){
+app.get("/admin-exists", async function (req, res) {
   const doesExists = adminExists.checkAdmin("Org1").then((value) => {
     res.send(value);
   });

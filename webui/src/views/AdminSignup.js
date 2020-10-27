@@ -28,9 +28,9 @@ export class Signup extends Component {
   constructor() {
     super();
     this.state = {
-      username: "hritik",
+      username: "council-admin",
       password: "",
-      email: "admin@test.com",
+      email: "council_admin@test.com",
       orgName: "Org1",
     };
   }
@@ -58,8 +58,6 @@ export class Signup extends Component {
       body: raw,
       redirect: "follow",
     };
-
-    console.log(raw);
 
     fetch("http://localhost:5000/signup", requestOptions)
       .then((response) => {

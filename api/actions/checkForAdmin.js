@@ -21,12 +21,9 @@ const log4js = require("log4js");
 const logger = log4js.getLogger("PlanNet");
 const util = require("util");
 
-const checkAdmin = async (
-  org_name,
-) => {
+const checkAdmin = async (org_name) => {
   try {
-
-    const username = "hritik";
+    const username = "council-admin";
     const ccp = await helper.getCCP(org_name);
 
     // Create a new file system based wallet for managing identities.
