@@ -15,6 +15,7 @@ import "bootstrap/dist/css/bootstrap.css";
 
 import { Link, Redirect } from "react-router-dom";
 import { useAuth } from "../components/context/auth";
+import { API_BASE_URL } from "../constant";
 
 export default function Login() {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -42,7 +43,7 @@ export default function Login() {
       redirect: "follow",
     };
 
-    fetch("http://localhost:5000/authenticate", requestOptions)
+    fetch(`${API_BASE_URL}/authenticate`, requestOptions)
       .then((response) => {
         if (response.status == 400) {
           throw new Error("Incorrect username or password");

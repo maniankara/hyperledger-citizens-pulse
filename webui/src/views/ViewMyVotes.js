@@ -11,6 +11,7 @@ import {
   Table,
   Badge,
 } from "reactstrap";
+import { API_BASE_URL } from "../constant";
 
 class Icons extends React.Component {
   constructor(props) {
@@ -47,7 +48,7 @@ class Icons extends React.Component {
     };
 
     await fetch(
-      "http://localhost:5000/channels/mychannel/chaincodes/planCC",
+      `${API_BASE_URL}/channels/mychannel/chaincodes/planCC`,
       requestOptions
     )
       .then((response) => response.json())
@@ -73,7 +74,7 @@ class Icons extends React.Component {
       redirect: "follow",
     };
 
-    await fetch("http://localhost:5000/decode", requestOptions)
+    await fetch(`${API_BASE_URL}/decode`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         this.setState({
@@ -96,7 +97,7 @@ class Icons extends React.Component {
       redirect: "follow",
     };
 
-    await fetch("http://localhost:5000/getMyVotes", requestOptions)
+    await fetch(`${API_BASE_URL}/getMyVotes`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         this.setState({
