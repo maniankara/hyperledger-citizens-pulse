@@ -28,9 +28,9 @@ export class Signup extends Component {
   constructor() {
     super();
     this.state = {
-      username: "council-admin",
+      username: "admin1",
       password: "",
-      email: "council_admin@test.com",
+      email: "admin1@test.com",
       orgName: "Org1",
     };
   }
