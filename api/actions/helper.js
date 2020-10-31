@@ -108,6 +108,7 @@ const getRegisteredUser = async (
   isJson
 ) => {
   try {
+    console.log(username, userOrg, password, email);
     let ccp = await getCCP(userOrg);
     const caUrl = await getCaUrl(userOrg, ccp);
 
@@ -137,56 +138,73 @@ const getRegisteredUser = async (
       );
       await enrollAdmin(userOrg, ccp);
       adminIdentity = await wallet.get(adminName);
+
+      // save admin credentials in API server
+      let user = new User({
+        username: username,
+        email: email,
+        password: password,
+        org: userOrg,
+        cert: adminIdentity,
+      });
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(user.password, salt);
+      await user.save();
+
       console.log("Admin Enrolled Successfully");
     }
 
-    const provider = wallet
-      .getProviderRegistry()
-      .getProvider(adminIdentity.type);
-    const adminUser = await provider.getUserContext(adminIdentity, adminName);
+    if (username != "admin1" && username != "admin2") {
+      const provider = wallet
+        .getProviderRegistry()
+        .getProvider(adminIdentity.type);
+      const adminUser = await provider.getUserContext(adminIdentity, adminName);
 
-    const secret = await ca.register(
-      {
-        affiliation: await getAffiliation(userOrg),
+      const secret = await ca.register(
+        {
+          affiliation: await getAffiliation(userOrg),
+          enrollmentID: username,
+          role: "client",
+        },
+        adminUser
+      );
+
+      const enrollment = await ca.enroll({
         enrollmentID: username,
-        role: "client",
-      },
-      adminUser
-    );
+        enrollmentSecret: secret,
+      });
+      const x509Identity = {
+        credentials: {
+          certificate: enrollment.certificate,
+          privateKey: enrollment.key.toBytes(),
+        },
+        mspId: await getOrgMSP(userOrg),
+        type: "X.509",
+      };
 
-    const enrollment = await ca.enroll({
-      enrollmentID: username,
-      enrollmentSecret: secret,
-    });
-    const x509Identity = {
-      credentials: {
-        certificate: enrollment.certificate,
-        privateKey: enrollment.key.toBytes(),
-      },
-      mspId: await getOrgMSP(userOrg),
-      type: "X.509",
-    };
+      await wallet.put(username, x509Identity);
+      console.log(
+        `Successfully registered and enrolled admin user ${username} and imported it into the wallet`
+      );
 
-    await wallet.put(username, x509Identity);
-    console.log(
-      `Successfully registered and enrolled admin user ${username} and imported it into the wallet`
-    );
-
-    let user = new User({
-      username: username,
-      email: email,
-      password: password,
-      org: userOrg,
-      cert: x509Identity,
-    });
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
-    await user.save();
+      // save user credentials in API server
+      let user = new User({
+        username: username,
+        email: email,
+        password: password,
+        org: userOrg,
+        cert: x509Identity,
+      });
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(user.password, salt);
+      await user.save();
+    }
 
     var response = {
       success: true,
       message: username + " enrolled Successfully",
     };
+
     return response;
   } catch (error) {
     return error.message;

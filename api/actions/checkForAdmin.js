@@ -23,7 +23,7 @@ const util = require("util");
 
 const checkAdmin = async (org_name) => {
   try {
-    const username = "council-admin";
+    const username = "admin1";
     const ccp = await helper.getCCP(org_name);
 
     // Create a new file system based wallet for managing identities.

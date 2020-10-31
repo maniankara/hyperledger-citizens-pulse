@@ -59,7 +59,7 @@ class Dashboard extends React.Component {
       channelName: "mychannel",
       chaincodeName: "planCC",
       transient: "",
-      args: [action, planName, "council-admin"],
+      args: [action, planName, "admin1"],
     });
 
     var requestOptions = {
@@ -255,7 +255,7 @@ class Dashboard extends React.Component {
       channelName: "mychannel",
       chaincodeName: "planCC",
       transient: "",
-      args: [planName, "hritik", payload],
+      args: [planName, "admin1", payload],
     });
 
     var requestOptions = {
@@ -311,7 +311,7 @@ class Dashboard extends React.Component {
       channelName: "mychannel",
       chaincodeName: "planCC",
       transient: "",
-      args: [planName, "hritik", comment_body],
+      args: [planName, "admin1", comment_body],
     });
 
     var requestOptions = {
