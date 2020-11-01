@@ -1,7 +1,22 @@
+06.11.2020
+   * Last Week
+   * Next Week
+      - TODO: Federated organisations
+
+
 01.11.2020
  * Last week
+   - Anoop: Test insights: works
+   - Anoop: Sent mails to Min and Hritik
+   - Releases, code coverage, bugs
  * Next week
-   - TODO: Federated organisations
+   - new release: bump version in file
+   - Investigate: Binary deliverables
+   - hyperledger fabric as a managed service in AWS: Anoop to provide an t3a.nano
+   - Fix Blog review comments
+   - Multicloud managed services study: AWS, IBM cloud, Azure, Google cloud, Alibaba cloud
+   - Anoop: App testing: mobile branch + commenting feature
+
 
 27.10.2020
   * Last week
