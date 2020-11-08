@@ -1,7 +1,12 @@
 06.11.2020
    * Last Week
-   * Next Week
-      - TODO: Federated organisations
+    - Release: All done. TODO: Add tests
+    - t3.nano: done
+   * For the future:
+    - Managed cloud services
+    - Finish blog
+    - TODO: Federated organisations
+    - Fix mobile failures
 
 
 01.11.2020
