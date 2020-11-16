@@ -121,12 +121,7 @@ export class PlanInsights extends Component {
                     <CardSubtitle>
                       <Row>
                         <Col md="10" align="justify">
-                          {this.state.fetched_details.description} conetnt large
-                          rextra conetnt large rextra conetnt large rextra
-                          conetnt large rextra conetnt large rextra conetnt
-                          large rextra conetnt large rextra conetnt large rextra
-                          conetnt large rextra conetnt large rextra conetnt
-                          large rextra
+                          {this.state.fetched_details.description}
                         </Col>
                         <Col md="2">
                           <Button
