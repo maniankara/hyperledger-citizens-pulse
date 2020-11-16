@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdbreact";
 import {
   Card,
@@ -13,15 +13,44 @@ import {
 } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.css";
 
+
 import { Link, Redirect } from "react-router-dom";
 import { useAuth } from "../components/context/auth";
+import { API_BASE_URL } from "../constant";
 
 export default function Login() {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [adminExists, setAdminExists] = useState(true);
   const { setAuthTokens } = useAuth();
+
+  useEffect(() => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:5000/admin-exists")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          setAdminExists(result);
+        },
+        (error) => {
+          setIsError(error);
+        }
+      )
+  }, []);
+
+  if (!adminExists) {
+    return <Redirect to="/signup-admin" />;
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -42,7 +71,7 @@ export default function Login() {
       redirect: "follow",
     };
 
-    fetch("http://localhost:5000/authenticate", requestOptions)
+    fetch(`${API_BASE_URL}/authenticate`, requestOptions)
       .then((response) => {
         if (response.status == 400) {
           throw new Error("Incorrect username or password");
@@ -60,11 +89,11 @@ export default function Login() {
 
   var token = localStorage.getItem("user_token");
   if (typeof token !== "undefined" && token !== null) {
-    return <Redirect to="/admin/dashboard" />;
+    return <Redirect to="/dashboard/polls" />;
   }
 
   if (isLoggedIn) {
-    return <Redirect to="/admin/dashboard" />;
+    return <Redirect to="/dashboard/polls" />;
   }
 
   return (

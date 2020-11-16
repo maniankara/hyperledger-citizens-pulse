@@ -39,6 +39,7 @@ import {
 
 import routes from "routes.js";
 import CreatePlanModal from "../../views/CreatePlanModal";
+import { API_BASE_URL } from "../../constant";
 
 class Header extends React.Component {
   constructor(props) {
@@ -84,7 +85,7 @@ class Header extends React.Component {
     });
   }
   getBrand() {
-    let brandName = "Default Brand";
+    let brandName = this.props.name;
     routes.map((prop, key) => {
       if (window.location.href.indexOf(prop.layout + prop.path) !== -1) {
         brandName = prop.name;
@@ -128,7 +129,7 @@ class Header extends React.Component {
       redirect: "follow",
     };
 
-    fetch("http://localhost:5000/deleteuser", requestOptions)
+    fetch(`${API_BASE_URL}/deleteuser`, requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
@@ -152,7 +153,7 @@ class Header extends React.Component {
       redirect: "follow",
     };
 
-    fetch("http://localhost:5000/decode", requestOptions)
+    fetch(`${API_BASE_URL}/decode`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         this.setState({

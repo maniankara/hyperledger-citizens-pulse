@@ -17,9 +17,11 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 import AdminLayout from "layouts/Admin.js";
 import Signup from "./views/Signup";
 import Login from "./views/Login";
+import AdminSignup from "./views/AdminSignup"
 
 import PrivateRoute from "./components/FixedPlugin/PrivateRoute";
 import { AuthContext } from "./components/context/auth";
+import PlanInsights from "views/PlanInsights";
 
 const hist = createBrowserHistory();
 
@@ -37,10 +39,12 @@ function App(props) {
       <Router history={hist}>
         <Switch>
           <Route exact path="/" component={Login}></Route>
+          <Route exact path="/signup-admin" component={AdminSignup}></Route>
           <Route path="/signin" component={Login}></Route>
           <Route path="/signup" component={Signup}></Route>
+          <PrivateRoute path="/insights" component={PlanInsights} />
           <PrivateRoute
-            path="/admin"
+            path="/dashboard"
             component={AdminLayout}
             render={(props) => <AdminLayout {...props} />}
           />

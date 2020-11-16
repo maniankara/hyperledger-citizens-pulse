@@ -64,8 +64,6 @@ var getAllPlans = async function get(
       1
     );
 
-    console.log(all_plans);
-
     return all_plans;
   } catch (error) {
     return error.message;

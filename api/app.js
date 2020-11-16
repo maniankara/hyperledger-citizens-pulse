@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 var jwt_decode = require("jwt-decode");
 const _ = require("lodash");
+var encoding = require("encoding");
 
 const jwt = require("jsonwebtoken");
 const constants = require("./config/constants.json");
@@ -16,6 +17,12 @@ const constants = require("./config/constants.json");
 const connectDb = require("./src/connection");
 const User = require("./src/user.model");
 const UserVote = require("./src/vote.model");
+var createInsights = require("./actions/createInsights");
+var getGlobalState = require("./actions/getGlobalState");
+
+const { type } = require("os");
+var cron = require("node-cron");
+const CronClosure = require("./actions/cronPlanClose");
 
 logger.level = "all";
 
@@ -28,6 +35,8 @@ const bearerToken = require("express-bearer-token");
 var helper = require("./actions/helper");
 var invoke = require("./actions/invoke");
 var fetchUserVote = require("./actions/obtainUserVote");
+var adminExists = require("./actions/checkForAdmin");
+
 var pollComplete = require("./actions/pollComplete");
 const { json } = require("body-parser");
 const { Model } = require("mongoose");
@@ -55,6 +64,7 @@ app.use(
       "/decode",
       "/listall",
       "/deleteuser",
+      "/admin-exists",
     ],
   })
 );
@@ -73,7 +83,8 @@ app.use((req, res, next) => {
     req.originalUrl.indexOf("/authenticate") >= 0 ||
     req.originalUrl.indexOf("/decode") >= 0 ||
     req.originalUrl.indexOf("/listall") >= 0 ||
-    req.originalUrl.indexOf("/deleteuser") >= 0
+    req.originalUrl.indexOf("/deleteuser") >= 0 ||
+    req.originalUrl.indexOf("admin-exists") >= 0
   ) {
     return next();
   }
@@ -115,6 +126,8 @@ var server = app.listen(port, function () {
 
 logger.info("****************** SERVER STARTED ************************");
 logger.info("***************  http://%s:%s  ******************", host, port);
+
+cron.schedule("0 0 0 * * *", async () => CronClosure.closeExpired());
 
 app.post("/channels/:channelName/chaincodes/:chaincodeName", async function (
   req,
@@ -327,4 +340,48 @@ app.delete("/deleteuser", async function (req, res) {
   );
 
   res.status(200).send(deletedItem);
+});
+
+app.get(
+  "/download-insights/user/:username/org/:orgname/plan/:planName/",
+  async function (req, res) {
+    var username = req.params.username;
+    var planName = req.params.planName;
+    var orgName = req.params.orgname;
+
+    var result = {};
+    console.log(username, planName, orgName);
+    var temp = await createInsights
+      .createInsights(username, orgName, planName, "mychannel", "planCC")
+      .then((doc) => {
+        var data = doc.output();
+        var buffer = encoding.convert(data, "Latin_1");
+        res.send(buffer);
+
+        // ===========================
+
+        // let pdf_name = "a4.pdf";
+        // res.download(pdf_name);
+      });
+  }
+);
+
+app.get(
+  "/getGlobalState/user/:username/org/:orgname/plan/:planName/",
+  async function (req, res) {
+    var username = req.params.username;
+    var planName = req.params.planName;
+    var orgName = req.params.orgname;
+
+    var res = await getGlobalState
+      .state(username, orgName, planName, "mychannel", "planCC")
+      .then((data) => {
+        res.status(200).send(data);
+      });
+  }
+);
+app.get("/admin-exists", async function (req, res) {
+  const doesExists = adminExists.checkAdmin("Org1").then((value) => {
+    res.send(value);
+  });
 });

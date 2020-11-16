@@ -12,6 +12,7 @@ import {
 } from "reactstrap";
 import NotificationAlert from "react-notification-alert";
 import Login from "./Login";
+import { API_BASE_URL } from "../constant";
 import { BrowserRouter, Route, Switch, Link, Redirect } from "react-router-dom";
 
 var options = {};
@@ -60,7 +61,7 @@ export class Signup extends Component {
       redirect: "follow",
     };
 
-    fetch("http://localhost:5000/signup", requestOptions)
+    fetch(`${API_BASE_URL}/signup`, requestOptions)
       .then((response) => {
         if (response.status != 200) {
           throw new Error("Oops, some error occurred");
